@@ -1,0 +1,618 @@
+---
+title: "Herbarium Figure Code"
+author: "Hayden Vega"
+date: "2023-08-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+install.packages("janitor")
+install.packages("tidyverse")
+install.packages("devtools")
+devtools::install_github("an-bui/calecopal")
+install.packages("installr")
+```
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(calecopal)
+```
+
+
+##Load in the data for surface area and max height
+```{r, echo=FALSE}
+surf_area <- read.csv("surf_area - Sheet1.csv", header = TRUE, sep = ",")
+tdmc <- read.csv("cleanedtdmc - Sheet1.csv", header = TRUE, sep = ",")
+
+
+#New data 2/13
+thick <- read.csv("2_13 code  - thick.csv", header = TRUE, sep = ",")
+width <- read.csv("2_13 code  - max_width.csv", header = TRUE, sep = ",")
+height <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",")
+height_all <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",")
+cor <- read.csv("2_13 code  - h,w,t.csv", header = TRUE, sep = ",")
+
+```
+# cor to long data for grouping by trait
+```{r}
+cor_long <- cor %>% 
+  pivot_longer(cols = 3:11, 
+               names_to = "treatment", 
+               values_to = "value")
+View(cor_long)
+
+```
+##Filter for herbarium and fresh traits
+```{r}
+h_r_traits <- cor_long %>% 
+filter (treatment == "width_i" | treatment == "width_h" | treatment == "height_i" | treatment == "height_h" | treatment == "thick_i" | treatment == "thick_h")
+```
+
+## Predictors grouped by trait # I'm stuck
+```{r}
+h_r_traits %>% 
+  ggplot(aes(, value))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())
+  #facet_wrap(~species, 
+            # strip.position = "top")
+  
+
+```
+
+## Convert height from wide to long data
+```{r}
+height_long <- height_all %>% 
+  pivot_longer(cols = 2:4, 
+               names_to = "treatment", 
+               values_to = "height")
+View(height_long)
+##Kinda shitty, but species of the specimen is in the height category
+
+```
+## Plot height by each species
+```{r}
+height_long %>% 
+ggplot(aes(treatment, height, color = species))+ 
+  geom_point()+
+  geom_smooth(method = lm)
+  #facet_wrap(~species)
+```
+# linear relationship summary
+```{r}
+height_lm <- lm(height_i~height_r, data = height_all)
+summary(height_lm)
+
+lm(formula = height_i~height_r, data = height_all)
+
+```
+```{r}
+height_lm <- lm(height_i~height_h, data = height_all)
+summary(height_lm)
+#plot(height_lm)
+
+```
+#facet plot for height i and herb by species
+```{r}
+height_all %>% 
+ ggplot(aes(height_h, height_i, color = species))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())+
+  facet_wrap(~species, 
+             nrow = 2, 
+             ncol = 5, 
+             strip.position = "top")
+
+```
+#facet grid this is a bust
+#```{r}
+height_all %>% 
+ ggplot(aes(height_h, height_i, color = species))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())+
+  facet_grid(species ~ height_h)
+#```
+
+#correlation map for everything! This is gonna get wild # I got confused! Ask AN!
+```{r}
+cor_matrix <- cor[, c(1,2,3,4,5)]
+head(cor_matrix, 6)
+
+```
+```{r}
+res <- cor(cor_matrix)
+round(res, 2)
+```
+
+#Creating summary table of species' linear regression of height values (h&r)
+```{r}
+
+
+```
+
+
+
+## Linearly plot the height for fresh vs herbarium for all
+```{r}
+height_all %>% 
+  ggplot(aes(height_h, height_i, color = species))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())
+```
+#plot height for fresh vs rehydrate; color = species 
+```{r}
+height_all %>% 
+  ggplot(aes(height_r, height_i, color = species))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE, fullrange = FALSE)+
+  labs (x = "Height of Rehydrated Algae (mg)", 
+        y = "Height of Fresh Algae (mg)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())
+```
+#plot height for fres vs rehydrate 
+```{r}
+height_all %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  annotate("text", x = 10, y = 35, label= "y = 1.017x + 0.078
+       R squared = 0.981")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank()) #fat chunk makes the background all white
+```
+#Plot height for fresh vs herb for all data
+```{r}
+height_all %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())+
+  annotate("text", x = 10, y = 35, label= "y = 1.175x-0.291
+       R squared = 0.922")
+```
+
+
+## Filter for individual species 
+#EGME
+```{r}
+height_EGME <- height_all %>% 
+  filter (species == "EGME")
+
+
+```
+#CC
+```{r}
+height_cc <- height_all %>% 
+  filter (species == "CC")
+
+```
+#CO
+```{r}
+height_co <- height_all %>% 
+  filter (species =="CO")
+
+```
+#CYOS
+```{r}
+height_CYOS <- height_all %>% 
+  filter (species == "CYOS")
+
+```
+#R
+```{r}
+height_R <- height_all %>% 
+  filter (species =="R")
+
+```
+
+
+
+#SUMMARY ALL Linear models for each species for heighti vs height h vs r
+
+
+
+#EGME
+#herb vs I
+```{r}
+height_EGME_lm <- lm(height_i~height_h, data = height_EGME) #apply linear model to height dataset, weight_i = y, h = x
+
+summary(height_EGME_lm)
+```
+#rehydrate vs I
+```{r}
+height_EGME_lm_r <- lm(height_i~height_r, data = height_EGME)
+summary(height_EGME_lm_r)
+```
+# herb vs rehydrate
+```{r}
+height_EGME_lm_hr <- lm(height_r~height_h, data = height_EGME)
+summary(height_EGME_lm_hr)
+```
+
+#CC herb vs I
+```{r}
+height_cc_lm <- lm(height_i~height_h, data = height_cc) #apply linear model to height dataset, weight_i = y, h = x
+
+summary(height_cc_lm)
+
+```
+#rehydrate vs initial
+```{r}
+height_cc_lm_r <- lm(height_i~height_r, data = height_cc)
+summary(height_cc_lm_r)
+```
+#herb vs rehydrate
+```{r}
+height_cc_lm_hr <- lm(height_r~height_h, data = height_cc)
+summary(height_cc_lm_hr)
+```
+
+
+#CO herb vs in
+```{r}
+height_co_lm <- lm(height_i~height_h, data = height_co) #apply linear model to height dataset, weight_i = y, h = x
+
+summary(height_co_lm)
+```
+# re vs in
+```{r}
+height_co_lm_r <- lm(height_i~height_r, data = height_co)
+summary(height_co_lm_r)
+```
+# herb vs re
+
+```{r}
+height_co_lm_hr <- lm(height_r~height_h, data = height_co)
+summary(height_co_lm_hr)
+```
+
+
+
+#CYOS herb vs i
+```{r}
+height_CYOS_lm <- lm(height_i~height_h, data = height_CYOS) #apply linear model to height dataset, weight_i = y, h = x
+
+summary(height_CYOS_lm)
+```
+# rehydrate vs i
+```{r}
+height_CYOS_lm_r <- lm(height_i~height_r, data = height_CYOS)
+summary(height_CYOS_lm_r)
+```
+# i vs r
+```{r}
+height_CYOS_lm_hr <- lm(height_r~height_h, data = height_CYOS)
+summary(height_CYOS_lm_hr)
+```
+#R h vs i
+```{r}
+height_R_lm <- lm(height_i~height_h, data = height_R) #apply linear model to height dataset, weight_i = y, h = x
+
+summary(height_R_lm)
+```
+# r vs i
+```{r}
+height_R_lm_r <- lm(height_i~height_r, data = height_R)
+summary(height_R_lm_r)
+```
+# herb vs re
+```{r}
+height_R_lm_hr <- lm(height_r~height_h, data = height_R)
+summary(height_R_lm_hr)
+```
+
+
+# GRAPH EM ALL for height 
+#EGME herb vs i
+```{r}
+height_EGME_lm %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+ annotate("text", x = 10, y = 35, label= "y = 1.25x - 0.58
+      R squared = 0.987")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+
+```
+#EGME rehydrate vs i
+```{r}
+height_EGME %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+ annotate("text", x = 10, y = 35, label= "y = 1.00x - 0.34
+       R squared = 0.994")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#EGME herb vs rehydrate
+```{r}
+height_EGME %>% 
+  ggplot(aes(height_h, height_r))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+ annotate("text", x = 10, y = 35, label= "y = 1.12x - 0.889
+       R squared = 0.990")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Rehydrated Algae (cm)")
+```
+
+#CC herb vs i
+```{r}
+height_cc_lm %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 12.5, y = 35, label= "y = 0.996x - 0.73
+      R squared = 0.963")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CC rehydrate vs i
+```{r}
+height_cc %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 15, y = 35, label= "y = 0.965x + 0.725
+       R squared = 0.997")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CC herb vs rehydrate
+```{r}
+height_cc %>% 
+  ggplot(aes(height_h, height_r))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 12.5, y = 35, label= "y = 1.48x - 4.35
+       R squared = 0.980")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CO rehydrate vs I
+```{r}
+height_co %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 10, y = 35, label= "y = 0.956x - 0.533
+       R squared = 0.986")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+
+#CO Herb vs I
+```{r}
+height_co_lm %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 5.7, y = 35, label= "y = 1.40x - 3.4
+      R squared = 0.963")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CO herb vs rehydrate
+```{r}
+height_co %>% 
+  ggplot(aes(height_h, height_r))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 10, y = 35, label= "y = 1.10x - 0.473
+       R squared = 0.985")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CYOS Herb vs I
+```{r} 
+height_CYOS_lm %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 14.5, y = 35, label= "y = 1.36x - 1.54
+      R squared = 0.490")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#CYOS rehydrate vs I
+```{r}
+height_CYOS %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 20, y = 35, label= "y = 1.01x - 0.412
+       R squared = 0.999")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+# CYOS herb vs rehydrate
+```{r}
+height_CYOS %>% 
+  ggplot(aes(height_h, height_r))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 13, y = 35, label= "y = 1.34x - 1.71
+       R squared = 0.4845")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#R Herb vs I
+```{r}
+height_R_lm %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 5, y = 25, label= "y = 1.12x - 0.217
+      R squared = 0.790")+ #labeling the rsquared and slope
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+
+#R rehydrate vs I
+```{r}
+height_R %>% 
+  ggplot(aes(height_r, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 10, y = 35, label= "y = 0.766x - 1.86
+       R squared = 0.")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+#R herb vs rehydrate
+```{r}
+height_R %>% 
+  ggplot(aes(height_h, height_r))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+ annotate("text", x = 10, y = 35, label= "y = 1.16x + 0.548
+       R squared = 0.780")+ #labeling the rsquared and slope
+  labs (x = "Height of Rehydrated Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")
+```
+
+
+# facet for linear stuff?
+```{r}
+height_all %>% 
+  ggplot(aes(height_h, height_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+# annotate("text", x = 5, y = 30, label= "y = 1.12x - 0.217
+     # R squared = 0.979")+ #labeling the rsquared and slope
+ # labs (x = "Height of Herbarium Algae (cm)", 
+       # y = "Height of Fresh Algae (cm)")+
+  facet_wrap(~species)
+
+```
+
+
+
+
+## create height_long_EGME, which is the height values for only EGME specimens
+```{r}
+height_long_EGME <- height_long %>% 
+  filter(species == "EGME")
+```
+#plot height for EGME using height_long_EGME dataset
+```{r}
+height_long_EGME %>%  
+ ggplot(aes(treatment, height))+
+  geom_point()
+```
+
+  ## Plot herbarium height against initial height for EGME
+  ## create new herbarium vs inital dataset
+```{r}
+height_ih_EGME <- height_long_EGME %>% 
+  filter(treatment %in% 
+  c("height_i","height_h"))
+```
+  
+  ## Filter TDMC values to get only EGME
+```{r}
+tdmc_EGME <- tdmc %>% 
+  filter (species == "EGME")
+
+View(tdmc_EGME)
+
+```
+
+##View the stats for tdmc linear model
+
+```{r}
+tdmc_EGME_lm <- lm(weight_i~weight_h, data = tdmc_EGME) #apply linear model to tdmc dataset, weight_i = y, h = x
+
+summary(tdmc_EGME_lm)
+```
+
+  ## Plot herbarium weight against initial weight;linear model 
+```{r}
+tdmc_EGME_lm %>% 
+  ggplot(aes(weight_h, weight_i))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = FALSE)+
+  annotate("text", x = 50, y = 2500, label= "y = 7.32x + 52.1
+      R squared = 0.938")+ #labeling the rsquared and slope
+  labs (x = "Weight of Herbarium Algae (mg)", 
+        y = "Weight of Fresh Algae (mg)")
+
+
+
+
+```
+
+
+  
+##make data wide again bruh
+```{r}
+height_ih_EGME_test <- height_ih_EGME %>% 
+  pivot_wider (names_from = "treatment", 
+               values_from = "height")
+
+```
+## Set scale of X and Y axis to be equal = 35
+```{r}
+height_ih_EGME_test <- data.frame(x=rnorm(35), 
+                                   y=rnorm(35))
+View(height_ih_EGME_test)
+```
+
+## plot herbarium by initial for EGME
+```{r}
+height_ih_EGME_test %>% 
+  ggplot(aes(height_i, height_h))+
+  geom_point()
+```
+
+
+## Convert surf_area from long to wide data; Long dataset to be called surf_long
+
+```{r pressure, echo=FALSE}
+surf_long <- surf_area %>% 
+  pivot_longer(cols = 2:4, 
+               names_to = "treatment", 
+               values_to = "area")
+View(surf_long)
+```
+
+##Plot long data in linear
+```{r}
+ggplot(data = surf_long, 
+       mapping = aes(x = treatment, 
+                     y = area))+
+  geom_point()
+  
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

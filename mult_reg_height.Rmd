@@ -1,0 +1,204 @@
+---
+title: "Multiple Regression Code"
+author: "Hayden Vega"
+date: "2024-02-14"
+output: html_document
+---
+```{r}
+install.packages("ggeffects")
+install.packages("DHARMa")
+install.packages("sjlabelled")
+install.packages("lme4")
+install.packages("lme4", type = "source")
+oo <- options(repos = "https://cran.r-project.org/")
+install.packages("Matrix")
+install.packages("lme4")
+install.packages("glmmTMG")
+install.packages("parameters")
+options(oo)
+```
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(ggeffects)
+library(sjlabelled)
+library(lme4)
+library(DHARMa)
+library(glmmTMG)
+library(parameters)
+
+#New data 2/13
+thick <- read.csv("2_13 code  - thick.csv", header = TRUE, sep = ",")
+width <- read.csv("2_13 code  - max_width.csv", header = TRUE, sep = ",")
+height <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",")
+height_all <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+cor_set <- read.csv("2_13 code  - h,w,t.csv", header = TRUE, sep = ",")
+egme_diff_ir <- read.csv("EGME Residual Calculation - max_height.csv", header = TRUE, sep = ",")
+species_diff_ir <- read.csv("Residual_mult_species - max_height.csv", header = TRUE, sep = ",")
+
+```
+# cor to long data for grouping by trait
+```{r}
+cor_long <- cor_set %>% 
+  pivot_longer(cols = 3:11, 
+               names_to = "treatment", 
+               values_to = "value")
+View(cor_long)
+
+```
+##Filter for herbarium and fresh traits
+```{r}
+h_r_traits <- cor_long %>% 
+filter (treatment == "width_i" | treatment == "width_h" | treatment == "height_i" | treatment == "height_h" | treatment == "avg_i" | treatment == "avg_h")
+ view(h_r_traits)
+```
+
+## Predictors grouped by trait # I'm stuck
+```{r}
+h_r_traits %>% 
+  ggplot(aes(species, value, color = "treatment"))+
+  geom_point()+
+  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
+  labs (x = "Height of Herbarium Algae (cm)", 
+        y = "Height of Fresh Algae (cm)")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())
+  #facet_wrap(~species, 
+            # strip.position = "top")
+  
+
+```
+#Single linear regression initial and rehydrate
+```{r}
+height_lm <- lm(height_i~height_r, data = height_all)
+summary(height_lm)
+
+lm(formula = height_i~height_r, data = height_all)
+```
+
+#MULTIPLE REGRESSION
+```{r}
+height_r_mult_reg <- lm(height_i ~ height_r * species, data = height_all)
+
+summary(height_r_mult_reg)
+
+
+
+
+height_r_mul_better <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
+summary(height_r_mul_better)
+
+```
+#Plot the model
+```{r}
+
+library(sjlabelled)
+data(efc)
+fit <- lm(barthtot ~ c12hour + neg_c_7 + c161sex + c172code, data = efc)
+
+ggpredict(height_r_mul_better, terms = c("height_r", "species")) %>% 
+  plot(show_data=TRUE)+
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3"))+
+  scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3"))
+  
+
+model_parameters(height_r_mul_better)
+
+
+
+```
+#create data frame from predictions
+```{r}
+height_predictions <- ggpredict(height_r_mul_better, terms = c("height_r", "species"))
+view(height_predictions)
+intercept <-  -0.296204
+egme_slope <- 0.167271
+r_egme <- 0.002756
+predict_value <- 10.16106462
+
+egme_slope * 10 + intercept
+
+(egme_slope) * 10 + intercept
+
+```
+
+#Add individual#column
+```{r}
+df <- tibble(id = 1:3, x = c("m-123", "f-455", "f-123"))
+view(df)
+# There are three basic ways to split up a string into pieces:
+# 1. with a delimiter
+ #code has been input above when we load in data so we don't have to change it everytime. 
+# height_all %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  # unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+
+```
+
+**Residual Modeling using Dharma**
+```{r}
+height_r_residuals <- simulateResiduals(fittedModel = height_r_mul_better, plot = T)
+#Results suggest the relationship may be overfitted; too complex; Underdispersed
+
+testDispersion(height_r_residuals, plot = T, type = ("DHARMa"))
+
+testDispersion(height_r_residuals, alternative = "less", plot = T)
+
+
+#I don't know what this does or how to interpret it
+
+```
+
+#figure out if single regression is better
+
+```{r}
+height_r_residuals_single <- simulateResiduals(fittedModel = height_lm, plot = T)
+
+```
+
+```{r}
+plotResiduals(height_r_residiuals) # right plot in plot.DHARMa()
+
+```
+#FILTER BY EGME SPECIES
+```{r}
+height_EGME <- height_all %>% 
+  filter (species == "EGME")
+
+```
+#Run multiple regression for single species
+```{r}
+height_r_mul_EGME <- lmer(height_i ~ height_r + (1 | individual_id), data = height_EGME)
+summary(height_r_mul_EGME)
+
+#height_r_mul_better <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
+#The species factor was removed. Should it be included? Or is it okay to have it removed because we are looking at each species separately?
+
+```
+#look at EGME RESIDUALS #use to make % error calulations easier?
+```{r}
+height_r_EGME_residuals <- simulateResiduals(fittedModel = height_r_mul_EGME, plot = T)
+testDispersion(height_r_EGME_residuals, alternative = "less", plot = T)
+
+```
+#Use equation to calculate percent difference in sheets
+#boxplot of percent error residuals _IR_EGME
+```{r}
+
+egme_diff_ir_plot <- ggplot(egme_diff_ir, aes(x=species, y = percent_difference_r))
+ egme_diff_ir_plot + geom_boxplot()
+  
+
+
+```
+#Plot residuals of multiple species
+```{r}
+species_diff_ir_plot <- ggplot(species_diff_ir, aes(x=species, y = percent_difference_r))
+ species_diff_ir_plot + geom_boxplot()
+
+```
+
+
+
