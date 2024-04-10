@@ -4,21 +4,11 @@ author: "Hayden Vega"
 date: "2024-02-14"
 output: html_document
 ---
-```{r}
-install.packages("ggeffects")
-install.packages("DHARMa")
-install.packages("sjlabelled")
-install.packages("lme4")
-install.packages("lme4", type = "source")
-oo <- options(repos = "https://cran.r-project.org/")
-install.packages("Matrix")
-install.packages("lme4")
-install.packages("glmmTMB")
-install.packages("parameters")
-options(oo)
-```
 
-```{r}
+
+```{r set-up}
+
+# libraries
 library(janitor)
 library(tidyverse)
 library(ggeffects)
@@ -30,47 +20,90 @@ library(parameters)
 library(here)
 
 #New data 2/13
-thick <- read.csv("2_13 code  - thick.csv", header = TRUE, sep = ",")
-width <- read.csv("2_13 code  - max_width.csv", header = TRUE, sep = ",")
-height <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",")
-height_all <- read.csv("2_13 code  - max_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+# thick <- read.csv("2_13 code  - thick.csv", header = TRUE, sep = ",")
+# width <- read.csv("2_13 code  - max_width.csv", header = TRUE, sep = ",")
+height <- read_csv(here("data", "2_13 code  - max_height.csv"))
+
+height_all <- height %>%
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
-cor_set <- read.csv("2_13 code  - h,w,t.csv", header = TRUE, sep = ",")
-egme_diff_ir <- read.csv("EGME Residual Calculation - max_height.csv", header = TRUE, sep = ",")
-species_diff_ir <- read.csv("Residual_mult_species - max_height.csv", header = TRUE, sep = ",")
+
+cor_set <- read_csv(here("data", "2_13 code  - h,w,t.csv")) %>% 
+  drop_na(specimen_id)
+egme_diff_ir <- read_csv(here("data", "EGME Residual Calculation - max_height.csv"))
+species_diff_ir <- read_csv(here("data", "Residual_mult_species - max_height.csv"))
 
 ```
+
+**Question:** why are there some specimen IDs that are missing in the `cor_set` data frame?
+
 # cor to long data for grouping by trait
 ```{r}
 cor_long <- cor_set %>% 
   pivot_longer(cols = 3:11, 
                names_to = "treatment", 
-               values_to = "value")
-View(cor_long)
-
+               values_to = "value") %>% 
+  # separating trait from treatment
+  separate_wider_delim(treatment,
+                       delim = "_",
+                       names = c("trait", "treatment")) %>% 
+  # recoding treatment
+  mutate(treatment = case_when(
+    treatment == "i" ~ "initial",
+    treatment == "h" ~ "herbarium",
+    treatment == "r" ~ "rehydrated"
+  )) %>% 
+  pivot_wider(names_from = treatment,
+              values_from = value)
 ```
-##Filter for herbarium and fresh traits
+
+**Question:** What is `avg`?
+
+# Initial vs herbarium traits
+
+## Height
 ```{r}
-h_r_traits <- cor_long %>% 
-filter (treatment == "width_i" | treatment == "width_h" | treatment == "height_i" | treatment == "height_h" | treatment == "avg_i" | treatment == "avg_h")
- view(h_r_traits)
+height_init_vs_herb <- cor_long %>% 
+  filter(trait == "height") %>% 
+  ggplot(aes(x = herbarium, y = initial)) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = 2,
+              color = "grey") +
+  geom_point(size = 1, 
+             alpha = 0.8) +
+  labs(x = "Herbarium height (cm)",
+       y = "Initial height (cm)",
+       title = "Initial vs. herbarium height") +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ species, ncol = 5, scales = "free")
+
+height_init_vs_herb
 ```
 
-## Predictors grouped by trait # I'm stuck
+## Width
 ```{r}
-h_r_traits %>% 
-  ggplot(aes(species, value, color = "treatment"))+
-  geom_point()+
-  geom_smooth(formula = "y~x", method = "lm", se = TRUE)+
-  labs (x = "Height of Herbarium Algae (cm)", 
-        y = "Height of Fresh Algae (cm)")+
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_blank())
-  #facet_wrap(~species, 
-            # strip.position = "top")
-  
+width_init_vs_herb <- cor_long %>% 
+  filter(trait == "width") %>% 
+  ggplot(aes(x = herbarium, y = initial)) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = 2,
+              color = "grey") +
+  geom_point(size = 1, 
+             alpha = 0.8) +
+  labs(x = "Herbarium width (cm)",
+       y = "Initial width (cm)",
+       title = "Initial vs. herbarium width") +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ species, ncol = 5, scales = "free")
 
+width_init_vs_herb
 ```
+
 #Single linear regression initial and rehydrate
 ```{r}
 height_lm <- lm(height_i~height_r, data = height_all)
