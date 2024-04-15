@@ -233,19 +233,92 @@ scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "
 #https://stackoverflow.com/questions/75101739/add-horizontal-line-to-an-effects-plot-with-different-intercepts-per-panel
 
 #graphs without species lines
-
+#Does this incorporate individual effects?
 #height IR
 ggpredict(height_reg_ir, terms = "height_r") %>% 
  plot(show_data=TRUE) +
 scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
  scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
 
+#Width IR
+ggpredict(width_reg_ir, terms ="width_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Perimeter IR
+ggpredict(perimeter_reg_ir, terms = "per_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Surface Area IR
+ggpredict(surf_reg_ir, terms = "surf_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#TDMC IR
+ggpredict(tdmc_reg_ir, terms = "weight_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Thickness IR
+ggpredict(thick_reg_ir, terms = "thick_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Volume IR
+ggpredict(volume_reg_ir, terms = "vol_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#####IH GRAPHS Species not displayed
+
 #height IH
-ggpredict(height_reg_ih, terms = ("height_h") %>% 
+ggpredict(height_reg_ih, terms = ("height_h")) %>% 
  plot(show_data=TRUE) +
 scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))+
  scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))
 
+#Width
+ggpredict(width_reg_ih, terms ="width_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Perimeter
+ggpredict(perimeter_reg_ih, terms = "per_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Surface Area
+ggpredict(surf_reg_ih, terms = "surf_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#TDMC
+ggpredict(tdmc_reg_ih, terms = "weight_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Thickness
+ggpredict(thick_reg_ir, terms = "thick_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Volume
+ggpredict(volume_reg_ih, terms = "vol_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
 
 #graph with facet species
 ggpredict(height_reg_ir, terms = c("height_r", "species")) %>% 
