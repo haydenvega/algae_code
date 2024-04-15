@@ -1,0 +1,261 @@
+---
+title: "Clean Multiple Regression Code"
+author: "Hayden Vega"
+date: "2024-04-15"
+output: html_document
+---
+
+```{r}
+install.packages("ggeffects")
+install.packages("DHARMa")
+install.packages("sjlabelled")
+install.packages("lme4")
+install.packages("lme4", type = "source")
+oo <- options(repos = "https://cran.r-project.org/")
+install.packages("Matrix")
+install.packages("lme4")
+install.packages("glmmTMG")
+install.packages("parameters")
+options(oo)
+install.package("effects")
+```
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(ggeffects)
+library(sjlabelled)
+library(lme4)
+library(DHARMa)
+library(glmmTMG)
+library(parameters)
+library(effects)
+```
+
+
+
+#Load in data for each trait with individual ID delimiter
+```{r}
+height_all <- read.csv("final_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+width_all <- read.csv("final_width.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+perimeter_all <- read.csv("final_perimeter.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+surf_all <- read.csv("final_surf.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+tdmc_all <- read.csv("final_tdmc.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+thickness_all <- read.csv("final_thickness.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+volume_all <- read.csv("final_volume.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+
+
+```
+
+
+
+#Create multiple regression for each trait - initial & rehydrate
+```{r}
+
+height_reg_ir <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
+summary(height_reg_ir)
+
+width_reg_ir <- lmer(width_i ~ width_r * species + (1 | individual_id), data = width_all)
+summary(width_reg_ir)
+
+perimeter_reg_ir <- lmer(per_i ~ per_r * species + (1 | individual_id), data = perimeter_all)
+summary(perimeter_reg_ir)
+
+surf_reg_ir <- lmer(surf_i ~ surf_r * species + (1 | individual_id), data = surf_all)
+summary(surf_reg_ir)
+
+tdmc_reg_ir <- lmer(weight_i ~ weight_r * species + (1 | individual_id), data = tdmc_all)
+summary(tdmc_reg_ir)
+
+thick_reg_ir <- lmer(thick_i ~ thick_r * species + (1 | individual_id), data = thickness_all)
+summary(thick_reg_ir)
+
+volume_reg_ir <- lmer(vol_i ~ vol_r * species + (1 | individual_id), data = volume_all)
+summary(volume_reg_ir)
+
+
+```
+
+
+
+#Visualize the linear model I & Rehydrate
+```{r}
+#Height
+
+ggpredict(height_reg_ir, terms = c("height_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Width
+ggpredict(width_reg_ir, terms = c("width_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Perimeter
+ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Surface Area
+ggpredict(surf_reg_ir, terms = c("surf_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#TDMC
+ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Thickness
+ggpredict(thick_reg_ir, terms = c("thick_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Volume
+ggpredict(volume_reg_ir, terms = c("vol_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+```
+
+
+
+
+#Create multiple regression for each trait initial & herbarium
+```{r}
+#Height
+height_reg_ih <- lmer(height_i ~ height_h * species + (1 | individual_id), data = height_all)
+summary(height_reg_ih)
+
+#Width
+width_reg_ih <- lmer(width_i ~ width_h * species + (1 | individual_id), data = width_all)
+summary(width_reg_ih)
+
+#Perimeter
+perimeter_reg_ih <- lmer(per_i ~ per_h * species + (1 | individual_id), data = perimeter_all)
+summary(perimeter_reg_ih)
+
+#Surface Area
+surf_reg_ih <- lmer(surf_i ~ surf_h * species + (1 | individual_id), data = surf_all)
+summary(surf_reg_ih)
+
+#TDMC
+tdmc_reg_ih <- lmer(weight_i ~ weight_h * species + (1 | individual_id), data = tdmc_all)
+summary(tdmc_reg_ih)
+
+#Thickness
+thick_reg_ih <- lmer(thick_i ~ thick_h * species + (1 | individual_id), data = thickness_all)
+summary(thick_reg_ih)
+
+#Volume
+volume_reg_ih <- lmer(vol_i ~ vol_h * species + (1 | individual_id), data = volume_all)
+summary(volume_reg_ih)
+
+```
+
+
+
+
+#Visualize the linear models I & Herbarium
+```{r}
+#Height
+
+ggpredict(height_reg_ih, terms = c("height_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))
+
+#Width
+ggpredict(width_reg_ih, terms = c("width_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Perimeter
+ggpredict(perimeter_reg_ih, terms = c("per_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Surface Area
+ggpredict(surf_reg_ih, terms = c("surf_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#TDMC
+ggpredict(tdmc_reg_ih, terms = c("weight_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Thickness
+ggpredict(thick_reg_ir, terms = c("thick_r", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#Volume
+ggpredict(volume_reg_ih, terms = c("vol_h", "species")) %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+```
+
+
+
+
+#Summary graphs
+```{r}
+#Add 1:1 Line (I couldn't figure this out!)
+#https://stackoverflow.com/questions/75101739/add-horizontal-line-to-an-effects-plot-with-different-intercepts-per-panel
+
+#graphs without species lines
+
+#height IR
+ggpredict(height_reg_ir, terms = "height_r") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+#height IH
+ggpredict(height_reg_ih, terms = ("height_h") %>% 
+ plot(show_data=TRUE) +
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))+
+ scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "red"))
+
+
+#graph with facet species
+ggpredict(height_reg_ir, terms = c("height_r", "species")) %>% 
+ plot(show_data=TRUE, facet = TRUE) +
+scale_color_manual(values = c("black", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))+
+ scale_fill_manual(values = c("black", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3", "brown", "black", "black"))
+
+```
+
+
+
+
+

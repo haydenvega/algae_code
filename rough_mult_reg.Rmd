@@ -38,6 +38,8 @@ cor_set <- read.csv("2_13 code  - h,w,t.csv", header = TRUE, sep = ",")
 egme_diff_ir <- read.csv("EGME Residual Calculation - max_height.csv", header = TRUE, sep = ",")
 species_diff_ir <- read.csv("Residual_mult_species - max_height.csv", header = TRUE, sep = ",")
 
+mult_reg_residuals <- read.csv("Residual_mult_species_reg - max_height.csv", header = TRUE, sep = ",")
+
 ```
 # cor to long data for grouping by trait
 ```{r}
@@ -199,6 +201,12 @@ species_diff_ir_plot <- ggplot(species_diff_ir, aes(x=species, y = percent_diffe
  species_diff_ir_plot + geom_boxplot()
 
 ```
+#Plot species mult. regression residuals against w/out species mult. reg residuals
+```{r}
+ggplot(mult_reg_residuals, aes(x= percent_difference_r_m, y= percent_difference_r_mm))+ geom_point() 
+
+```
+
 
 
 
