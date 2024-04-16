@@ -352,5 +352,128 @@ perimeter_species_plot
 
 This is probably a plot for the supplemental material. The plot shows the slopes for each species, and the model predictions follow the same pattern as height (on average, herbarium perimeter is slightly lower than initial perimeter), but the only exception to this is POLA. This could be for a number of reasons, but based on the plot I would hypothesize that the unusual line is because there are only a few observations for that species.
 
+# 4. Model comparing treatments
+
+In this section, I'll fit models comparing trait values across treatments to see if herbarium traits are always (or consistently) lower than initial traits or rehydrated traits, and if initial and rehydrated traits are basically the same.  
+
+## a. Wrangling the data
+
+First, I'll rearrange the data frame so that all trait values are in one column, and another column is the "treatment" column with the levels `initial`, `herbarium`, and `rehydrated`.
+
+```{r height-rearrange}
+height_longer <- height_all %>% 
+  # turns columns into rows: column with "name" and another with "value"
+  pivot_longer(cols = height_i:height_r) %>% 
+  
+  # rename the "name" and "value" columns
+  rename(treatment = name,
+         height_mm = value) %>% 
+  
+  # recode "treatment" levels to reflect actual treatment names
+  mutate(treatment = case_when(
+    treatment == "height_i" ~ "initial",
+    treatment == "height_h" ~ "herbarium",
+    treatment == "height_r" ~ "rehydrated"
+  ),
+  # make sure R orders each level of "treatment" in the right order
+  treatment = fct_relevel(treatment, "initial", "herbarium", "rehydrated"))
+```
+
+And the same for perimeter:
+
+```{r perimeter-rearrange}
+perimeter_longer <- perimeter_all %>% 
+  # turns columns into rows: column with "name" and another with "value"
+  pivot_longer(cols = per_i:per_r) %>% 
+  
+  # rename the "name" and "value" columns
+  rename(treatment = name,
+         perimeter_mm = value) %>% 
+  
+  # recode "treatment" levels to reflect actual treatment names
+  mutate(treatment = case_when(
+    treatment == "per_i" ~ "initial",
+    treatment == "per_h" ~ "herbarium",
+    treatment == "per_r" ~ "rehydrated"
+  ),
+  # make sure R orders each level of "treatment" in the right order
+  treatment = fct_relevel(treatment, "initial", "herbarium", "rehydrated"))
+```
+
+## b. Fitting the model
+
+First, I'll try the model for height.
+
+```{r height-treatment-model}
+# model 1: no species
+height_treatment_m1 <- lmer(height_mm ~ treatment + (1|individual_id), data = height_longer)
+
+# model 2: with species interaction
+height_treatment_m2 <- lmer(height_mm ~ treatment*species + (1|individual_id), data = height_longer)
+```
+
+```{r perimeter-treatment-model}
+# model 1: no species
+perimeter_treatment_m1 <- lmer(perimeter_mm ~ treatment + (1|individual_id), data = perimeter_longer)
+
+# model 2: with species interaction
+perimeter_treatment_m2 <- lmer(perimeter_mm ~ treatment*species + (1|individual_id), data = perimeter_longer)
+```
+
+```{r height-treatment-residuals}
+simulateResiduals(height_treatment_m1, plot = TRUE)
+
+simulateResiduals(height_treatment_m2, plot = TRUE)
+```
+
+```{r perimeter-treatment-residuals}
+simulateResiduals(perimeter_treatment_m1, plot = TRUE)
+
+simulateResiduals(perimeter_treatment_m2, plot = TRUE)
+```
+
+```{r height-treatment-summary}
+summary(height_treatment_m1)
+
+summary(height_treatment_m2)
+```
+
+```{r perimeter-treatment-summary}
+summary(perimeter_treatment_m1)
+
+summary(perimeter_treatment_m2)
+```
+
+```{r height-treatment-AIC}
+model.sel(height_treatment_m1, height_treatment_m2)
+```
+
+```{r perimeter-treatment-AIC}
+model.sel(perimeter_treatment_m1, perimeter_treatment_m2)
+```
+
+For both traits, the model with the species interaction is better.
+
+```{r height-treatment-predictions}
+height_treatment_predictions <- ggpredict(height_treatment_m2,
+                                          terms = c("treatment", "species")) %>% 
+  as_tibble() %>% 
+  rename(treatment = x,
+         species = group)
+
+ggplot(data = height_treatment_predictions) +
+  geom_pointrange(aes(x = treatment,
+                      y = predicted,
+                      ymin = conf.low,
+                      ymax = conf.high)) +
+  facet_wrap(~ species)
+```
+
+
+
+
+
+
+
 
 
