@@ -1,0 +1,238 @@
+---
+title: "Multiple Regression Code"
+author: "Hayden Vega"
+date: "2024-02-14"
+output: html_document
+---
+
+
+```{r set-up}
+
+# libraries
+library(janitor)
+library(tidyverse)
+library(ggeffects)
+library(sjlabelled)
+library(lme4)
+library(DHARMa)
+library(glmmTMB)
+library(parameters)
+library(here)
+
+#New data 2/13
+# thick <- read.csv("2_13 code  - thick.csv", header = TRUE, sep = ",")
+# width <- read.csv("2_13 code  - max_width.csv", header = TRUE, sep = ",")
+height <- read_csv(here("data", "2_13 code  - max_height.csv"))
+
+height_all <- height %>%
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+cor_set <- read_csv(here("data", "2_13 code  - h,w,t.csv")) %>% 
+  drop_na(specimen_id)
+egme_diff_ir <- read_csv(here("data", "EGME Residual Calculation - max_height.csv"))
+species_diff_ir <- read_csv(here("data", "Residual_mult_species - max_height.csv"))
+
+```
+
+**Question:** why are there some specimen IDs that are missing in the `cor_set` data frame?
+
+# cor to long data for grouping by trait
+```{r}
+cor_long <- cor_set %>% 
+  pivot_longer(cols = 3:11, 
+               names_to = "treatment", 
+               values_to = "value") %>% 
+  # separating trait from treatment
+  separate_wider_delim(treatment,
+                       delim = "_",
+                       names = c("trait", "treatment")) %>% 
+  # recoding treatment
+  mutate(treatment = case_when(
+    treatment == "i" ~ "initial",
+    treatment == "h" ~ "herbarium",
+    treatment == "r" ~ "rehydrated"
+  )) %>% 
+  pivot_wider(names_from = treatment,
+              values_from = value)
+```
+
+**Question:** What is `avg`?
+
+# Initial vs herbarium traits
+
+## Height
+```{r}
+height_init_vs_herb <- cor_long %>% 
+  filter(trait == "height") %>% 
+  ggplot(aes(x = herbarium, y = initial)) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = 2,
+              color = "grey") +
+  geom_point(size = 1, 
+             alpha = 0.8) +
+  labs(x = "Herbarium height (cm)",
+       y = "Initial height (cm)",
+       title = "Initial vs. herbarium height") +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ species, ncol = 5, scales = "free")
+
+height_init_vs_herb
+```
+
+## Width
+```{r}
+width_init_vs_herb <- cor_long %>% 
+  filter(trait == "width") %>% 
+  ggplot(aes(x = herbarium, y = initial)) +
+  geom_abline(intercept = 0, slope = 1,
+              linetype = 2,
+              color = "grey") +
+  geom_point(size = 1, 
+             alpha = 0.8) +
+  labs(x = "Herbarium width (cm)",
+       y = "Initial width (cm)",
+       title = "Initial vs. herbarium width") +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ species, ncol = 5, scales = "free")
+
+width_init_vs_herb
+```
+
+#Single linear regression initial and rehydrate
+```{r}
+height_lm <- lm(height_i~height_r, data = height_all)
+summary(height_lm)
+
+lm(formula = height_i~height_r, data = height_all)
+```
+
+#MULTIPLE REGRESSION
+```{r}
+height_r_mult_reg <- lm(height_i ~ height_r * species, data = height_all)
+
+summary(height_r_mult_reg)
+
+
+
+
+height_r_mul_better <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
+summary(height_r_mul_better)
+
+```
+#Plot the model
+```{r}
+
+library(sjlabelled)
+data(efc)
+fit <- lm(barthtot ~ c12hour + neg_c_7 + c161sex + c172code, data = efc)
+
+ggpredict(height_r_mul_better, terms = c("height_r", "species")) %>% 
+  plot(show_data=TRUE)+
+scale_color_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3"))+
+  scale_fill_manual(values = c("white", "burlywood4", "antiquewhite", "azure3", "cornflowerblue", "cornsilk3", "blue4", "burlywood3", "darkgoldenrod3", "brown3"))
+  
+
+model_parameters(height_r_mul_better)
+
+
+
+```
+#create data frame from predictions
+```{r}
+height_predictions <- ggpredict(height_r_mul_better, terms = c("height_r", "species"))
+view(height_predictions)
+intercept <-  -0.296204
+egme_slope <- 0.167271
+r_egme <- 0.002756
+predict_value <- 10.16106462
+
+egme_slope * 10 + intercept
+
+(egme_slope) * 10 + intercept
+
+```
+
+#Add individual#column
+```{r}
+df <- tibble(id = 1:3, x = c("m-123", "f-455", "f-123"))
+view(df)
+# There are three basic ways to split up a string into pieces:
+# 1. with a delimiter
+ #code has been input above when we load in data so we don't have to change it everytime. 
+# height_all %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  # unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+
+```
+
+**Residual Modeling using Dharma**
+```{r}
+height_r_residuals <- simulateResiduals(fittedModel = height_r_mul_better, plot = T)
+#Results suggest the relationship may be overfitted; too complex; Underdispersed
+
+testDispersion(height_r_residuals, plot = T, type = ("DHARMa"))
+
+testDispersion(height_r_residuals, alternative = "less", plot = T)
+
+
+#I don't know what this does or how to interpret it
+
+```
+
+#figure out if single regression is better
+
+```{r}
+height_r_residuals_single <- simulateResiduals(fittedModel = height_lm, plot = T)
+
+```
+
+```{r}
+plotResiduals(height_r_residiuals) # right plot in plot.DHARMa()
+
+```
+#FILTER BY EGME SPECIES
+```{r}
+height_EGME <- height_all %>% 
+  filter (species == "EGME")
+
+```
+#Run multiple regression for single species
+```{r}
+height_r_mul_EGME <- lmer(height_i ~ height_r + (1 | individual_id), data = height_EGME)
+summary(height_r_mul_EGME)
+
+#height_r_mul_better <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
+#The species factor was removed. Should it be included? Or is it okay to have it removed because we are looking at each species separately?
+
+```
+#look at EGME RESIDUALS #use to make % error calulations easier?
+```{r}
+height_r_EGME_residuals <- simulateResiduals(fittedModel = height_r_mul_EGME, plot = T)
+testDispersion(height_r_EGME_residuals, alternative = "less", plot = T)
+
+```
+#Use equation to calculate percent difference in sheets
+#boxplot of percent error residuals _IR_EGME
+```{r}
+
+egme_diff_ir_plot <- ggplot(egme_diff_ir, aes(x=species, y = percent_difference_r))
+ egme_diff_ir_plot + geom_boxplot()
+  
+
+
+```
+#Plot residuals of multiple species
+```{r}
+species_diff_ir_plot <- ggplot(species_diff_ir, aes(x=species, y = percent_difference_r))
+ species_diff_ir_plot + geom_boxplot()
+
+```
+
+
+
