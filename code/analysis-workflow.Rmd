@@ -1,0 +1,48 @@
+---
+title: "Analysis workflow example"
+author: "An Bui"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Set up
+
+```{r set-up}
+# libraries
+# general use
+library(tidyverse)
+library(janitor)
+
+# analysis
+library(lme4)
+library(DHARMa)
+library(glmmTMB)
+
+# model prediction visualizations
+library(ggeffects)
+
+
+# data
+height_all <- read_csv("final_height.csv") %>% 
+  separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+perimeter_all <- read_csv("final_perimeter.csv") %>% 
+  separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-")
+
+```
+
+
+
+
+
+
+
+
+
+
