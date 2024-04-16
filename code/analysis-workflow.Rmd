@@ -16,31 +16,320 @@ knitr::opts_chunk$set(echo = TRUE)
 # general use
 library(tidyverse)
 library(janitor)
+library(here)
 
 # analysis
 library(lme4)
+library(lmerTest)
 library(DHARMa)
-library(glmmTMB)
+library(MuMIn)
 
 # model prediction visualizations
 library(ggeffects)
 
-
 # data
-height_all <- read_csv("final_height.csv") %>% 
+height_all <- read_csv(here("data", "final_height.csv")) %>% 
   separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-perimeter_all <- read_csv("final_perimeter.csv") %>% 
+perimeter_all <- read_csv(here("data", "final_perimeter.csv")) %>% 
   separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
+```
 
+And here are some adjustments to keep the visualizations consistent:
+
+```{r visualization-objects}
+# ggplot theme
+theme_set(theme_bw() +
+            theme(panel.grid = element_blank()))
+
+# abline color
+ref_line_col <- "grey"
+
+# model prediction color
+model_col <- "darkblue"
 ```
 
 
+# 2. Fitting different models and comparing them
+
+In this part of the script, I'm fitting two different models for each trait: one where the interaction of species is included, and the other is where species are left out. 
+
+```{r height-models}
+# model 1: herbarium height only
+height_m1 <- lmer(height_i ~ height_h + (1|individual_id), data = height_all)
+
+# model 2: herbarium height with interaction of species
+height_m2 <- lmer(height_i ~ height_h*species + (1|individual_id), data = height_all)
+```
+
+I'll do the same thing for the perimeter data:
+
+```{r perimeter-models}
+# model 1: herbarium perimeter only
+perimeter_m1 <- lmer(per_i ~ per_h + (1|individual_id), data = perimeter_all)
+
+# model 2: herbarium perimeter with interaction of species
+perimeter_m2 <- lmer(per_i ~ per_h*species + (1|individual_id), data = perimeter_all)
+```
 
 
+I'm going to check the residuals just in case, but we already know that the models are going to be overfitted. The residuals for height:  
 
+```{r height-residuals}
+simulateResiduals(height_m1, plot = TRUE)
+
+simulateResiduals(height_m2, plot = TRUE)
+```
+
+And for perimeter:
+
+```{r}
+simulateResiduals(perimeter_m1, plot = TRUE)
+
+simulateResiduals(perimeter_m2, plot = TRUE)
+```
+
+
+Then, I'm going to look at the summary objects for height:
+
+```{r height-model-summaries}
+summary(height_m1) 
+
+summary(height_m2)
+```
+
+And for perimeter:
+
+```{r perimeter-model-summaries}
+summary(perimeter_m1) 
+
+summary(perimeter_m2)
+```
+
+It looks like herbarium height significantly predicts initial height, no matter what. Similarly, herbarium perimeter predicts initial perimeter.  
+
+Now, I'm going to compare models using AIC using `MuMIn::model.sel()`.
+
+```{r height-AIC}
+model.sel(height_m1, height_m2)
+```
+
+And for perimeter:
+
+```{r}
+model.sel(perimeter_m1, perimeter_m2)
+```
+
+The Akaike Information Criterion gives you an AIC value for each model. The AIC penalizes complex models, even though they might explain more of the variation in the response. The model with the lower AIC is the "better" model. In this case, `height_m1`, which is the model without the interaction of species, is the "better" model. For perimeter, `perimeter_m2`, which is the model with the interaction of species, is the "better" model.  
+
+Taken together, what you would be able to say is that for some traits, species matter for determining the relationship between herbarium and initial measurements. For height, species don't matter because the "better" model is the one without species; in contrast, for perimeter, species do matter because the "better" model is the one with species.  
+
+Now, I'll calculate the R^2^ values for the selected models. For height:
+
+```{r height-r2}
+MuMIn::r.squaredGLMM(height_m1)
+```
+
+And for perimeter:
+
+```{r perimeter-R2}
+MuMIn::r.squaredGLMM(perimeter_m2)
+```
+
+This function gives you two R^2^ values: a "marginal" R^2^ and a "conditional" R^2^. The marginal R^2^ gives you the variation explained only by fixed (i.e. not random) effects, and the conditional R^2^ gives you the variation explained by both fixed and random effects. When reporting R^2^ for mixed models, it's useful to report both.  
+
+# 3. Visualizing
+
+## a. Visualizing model without species interaction
+
+For height, the best model is the one without species. Ultimately, the plot will have points representing the specimens with a line representing the linear relationship between herbarium height and initial height with a confidence interval.  
+
+First, I'll get the model predictions from `ggpredict()`:
+
+```{r height-predictions}
+# get predictions and save as object
+# constraining the range of predictions from 0 to 45 mm (maximum herbarium height is 41.6)
+height_predictions <- ggpredict(height_m1, terms = "height_h[0:45]") 
+
+# look at the data frame
+height_predictions
+```
+
+Then, I'll plot the model predictions on top of the raw data:
+
+```{r height-model-plot}
+height_model_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = height_all,
+             aes(x = height_h,
+                 y = height_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = height_predictions,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = height_predictions,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Herbarium height (mm)",
+       y = "Initial height (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 60, by = 10), 
+                     limits = c(0, 60)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 60, by = 10), 
+                     limits = c(0, 60))
+
+
+height_model_plot
+```
+
+From this figure, you can see that the model prediction is higher than the 1:1 line. For example, if you measured an herbarium sample that was 20 mm, the predicted initial height would actually be somewhere around 22 mm (according to the model). This means that herbarium heights are consistently lower than initial heights. This makes sense based on what we know about herbarium measures of length, width, etc. - because of shrinkage from the herbarium preservation process, samples get slightly smaller.
+
+## b. Visualizing model with species interaction
+
+For perimeter, the best model is the one with species. So now, I'll extract the model predictions for both `per_h` and `species`.
+
+```{r perimeter-predictions}
+# get predictions and save as object
+perimeter_predictions_nospecies <- ggpredict(perimeter_m2, terms = c("per_h")) %>% 
+  as_tibble()
+
+perimeter_predictions_species <- ggpredict(perimeter_m2, terms = c("per_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+
+# look at the data frames
+perimeter_predictions_nospecies
+
+perimeter_predictions_species
+```
+
+Then, I'll plot the model predictions on top of the raw data, but only the predictor of herbarium perimeter:
+
+```{r perimeter-model-plot}
+perimeter_model_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = perimeter_all,
+             aes(x = per_h,
+                 y = per_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = perimeter_predictions_nospecies,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = perimeter_predictions_nospecies,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Herbarium perimeter (mm)",
+       y = "Initial perimeter (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 600, by = 100), 
+                     limits = c(0, 600)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 600, by = 100), 
+                     limits = c(0, 600))
+  
+perimeter_model_plot 
+```
+
+Then, I'll plot each individual species with its own prediction line:
+
+```{r perimeter-species-plot}
+perimeter_species_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = perimeter_all,
+             aes(x = per_h,
+                 y = per_i,
+                 color = species),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = perimeter_predictions_species,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                fill = species,
+                group = species),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = perimeter_predictions_species,
+            aes(x = x,
+                y = predicted,
+                group = species)) +
+  
+  # theme
+  theme(legend.position = "none") +
+  
+  # axes
+  scale_x_continuous(breaks = seq(from = 0, to = 600, by = 100), 
+                     limits = c(0, 400)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 600, by = 100), 
+                     limits = c(0, 400)) +
+  
+  # facet
+  facet_wrap(~ species, nrow = 2)
+
+
+perimeter_species_plot
+```
 
 
 
