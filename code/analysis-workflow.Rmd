@@ -2,16 +2,19 @@
 title: "Analysis workflow example"
 author: "An Bui"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # 1. Set up
 
-```{r set-up}
+```{r set-up, message = FALSE, warning = FALSE}
 # libraries
 # general use
 library(tidyverse)
@@ -60,6 +63,8 @@ model_col <- "darkblue"
 
 # 2. Fitting different models and comparing them
 
+## a. Model construction
+
 In this part of the script, I'm fitting two different models for each trait: one where the interaction of species is included, and the other is where species are left out. 
 
 ```{r height-models}
@@ -80,6 +85,7 @@ perimeter_m1 <- lmer(per_i ~ per_h + (1|individual_id), data = perimeter_all)
 perimeter_m2 <- lmer(per_i ~ per_h*species + (1|individual_id), data = perimeter_all)
 ```
 
+## b. Residual check
 
 I'm going to check the residuals just in case, but we already know that the models are going to be overfitted. The residuals for height:  
 
@@ -91,12 +97,13 @@ simulateResiduals(height_m2, plot = TRUE)
 
 And for perimeter:
 
-```{r}
+```{r perimeter-residuals}
 simulateResiduals(perimeter_m1, plot = TRUE)
 
 simulateResiduals(perimeter_m2, plot = TRUE)
 ```
 
+## c. Model summaries
 
 Then, I'm going to look at the summary objects for height:
 
@@ -116,6 +123,8 @@ summary(perimeter_m2)
 
 It looks like herbarium height significantly predicts initial height, no matter what. Similarly, herbarium perimeter predicts initial perimeter.  
 
+## d. Model selection
+
 Now, I'm going to compare models using AIC using `MuMIn::model.sel()`.
 
 ```{r height-AIC}
@@ -124,13 +133,15 @@ model.sel(height_m1, height_m2)
 
 And for perimeter:
 
-```{r}
+```{r perimeter-AIC}
 model.sel(perimeter_m1, perimeter_m2)
 ```
 
 The Akaike Information Criterion gives you an AIC value for each model. The AIC penalizes complex models, even though they might explain more of the variation in the response. The model with the lower AIC is the "better" model. In this case, `height_m1`, which is the model without the interaction of species, is the "better" model. For perimeter, `perimeter_m2`, which is the model with the interaction of species, is the "better" model.  
 
 Taken together, what you would be able to say is that for some traits, species matter for determining the relationship between herbarium and initial measurements. For height, species don't matter because the "better" model is the one without species; in contrast, for perimeter, species do matter because the "better" model is the one with species.  
+
+## e. Calculating R^2^ values
 
 Now, I'll calculate the R^2^ values for the selected models. For height:
 
@@ -287,7 +298,7 @@ perimeter_model_plot
 
 Then, I'll plot each individual species with its own prediction line:
 
-```{r perimeter-species-plot}
+```{r perimeter-species-plot, fig.width = 20, fig.height = 10}
 perimeter_species_plot <- ggplot() +
   
   # plot the raw data as points
