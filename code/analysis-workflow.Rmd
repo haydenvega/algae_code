@@ -29,11 +29,17 @@ library(ggeffects)
 
 # data
 height_all <- read_csv(here("data", "final_height.csv")) %>% 
-  separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
 perimeter_all <- read_csv(here("data", "final_perimeter.csv")) %>% 
-  separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove = FALSE) %>% 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 ```
 
@@ -313,25 +319,27 @@ perimeter_species_plot <- ggplot() +
   geom_line(data = perimeter_predictions_species,
             aes(x = x,
                 y = predicted,
+                color = species,
                 group = species)) +
   
-  # theme
-  theme(legend.position = "none") +
+  # labels
+  labs(x = "Herbarium perimeter (mm)",
+       y = "Initial perimeter (mm)") +
   
-  # axes
-  scale_x_continuous(breaks = seq(from = 0, to = 600, by = 100), 
-                     limits = c(0, 400)) +
-  scale_y_continuous(breaks = seq(from = 0, to = 600, by = 100), 
-                     limits = c(0, 400)) +
+  # theme
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12)) +
   
   # facet
-  facet_wrap(~ species, nrow = 2)
+  facet_wrap(~ species, nrow = 2,
+             scales = "free")
 
 
 perimeter_species_plot
 ```
 
-
+This is probably a plot for the supplemental material. The plot shows the slopes for each species, and the model predictions follow the same pattern as height (on average, herbarium perimeter is slightly lower than initial perimeter), but the only exception to this is POLA. This could be for a number of reasons, but based on the plot I would hypothesize that the unusual line is because there are only a few observations for that species.
 
 
 
