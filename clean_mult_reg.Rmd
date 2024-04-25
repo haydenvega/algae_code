@@ -17,7 +17,8 @@ install.packages("lme4")
 install.packages("glmmTMG")
 install.packages("parameters")
 options(oo)
-install.package("effects")
+install.packages("effects")
+install.packages("MuMIn")
 ```
 
 ```{r}
@@ -27,9 +28,9 @@ library(ggeffects)
 library(sjlabelled)
 library(lme4)
 library(DHARMa)
-library(glmmTMG)
 library(parameters)
 library(effects)
+library(MuMIn)
 ```
 
 
@@ -61,34 +62,195 @@ volume_all <- read.csv("final_volume.csv", header = TRUE, sep = ",") %>% separat
 
 ```
 
+```{r visualization-objects}
+# ggplot theme
+theme_set(theme_bw() +
+            theme(panel.grid = element_blank()))
+
+# abline color
+ref_line_col <- "grey"
+
+# model prediction color
+model_col <- "darkblue"
+```
 
 
-#Create multiple regression for each trait - initial & rehydrate
-```{r}
+#Create multiple regression for each trait - initial & rehydrate WITH & WITHOUT species
+```{r height-models}
 
 height_reg_ir <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
 summary(height_reg_ir)
 
+height_reg_ir_nospecies <- lmer(height_i ~ height_r + (1 | individual_id), data = height_all)
+summary(height_reg_ir_nospecies)
+```
+
+```{r width-models}
 width_reg_ir <- lmer(width_i ~ width_r * species + (1 | individual_id), data = width_all)
 summary(width_reg_ir)
 
+width_reg_ir_nospecies <- lmer(width_i ~ width_r + (1 | individual_id), data = width_all)
+summary(width_reg_ir_nospecies)
+```
+
+
+```{r perimeter-models}
 perimeter_reg_ir <- lmer(per_i ~ per_r * species + (1 | individual_id), data = perimeter_all)
 summary(perimeter_reg_ir)
 
+perimeter_reg_ir_nospecies <- lmer(per_i ~ per_r + (1 | individual_id), data = perimeter_all)
+summary(perimeter_reg_ir_nospecies)
+```
+
+
+```{r surf-models}
 surf_reg_ir <- lmer(surf_i ~ surf_r * species + (1 | individual_id), data = surf_all)
 summary(surf_reg_ir)
 
+surf_reg_ir_nospecies <- lmer(surf_i ~ surf_r + (1 | individual_id), data = surf_all)
+summary(surf_reg_ir_nospecies)
+```
+
+
+```{r tdmc-models}
 tdmc_reg_ir <- lmer(weight_i ~ weight_r * species + (1 | individual_id), data = tdmc_all)
 summary(tdmc_reg_ir)
 
+tdmc_reg_ir_nospecies <- lmer(weight_i ~ weight_r + (1 | individual_id), data = tdmc_all)
+summary(tdmc_reg_ir_nospecies)
+
+```
+
+
+```{r thick-models}
 thick_reg_ir <- lmer(thick_i ~ thick_r * species + (1 | individual_id), data = thickness_all)
 summary(thick_reg_ir)
 
+thick_reg_ir_nospecies <- lmer(thick_i ~ thick_r + (1 | individual_id), data = thickness_all)
+summary(thick_reg_ir_nospecies)
+```
+
+
+```{r volume-models}
 volume_reg_ir <- lmer(vol_i ~ vol_r * species + (1 | individual_id), data = volume_all)
 summary(volume_reg_ir)
 
+volume_reg_ir_nospecies <- lmer(vol_i ~ vol_r + (1 | individual_id), data = volume_all)
+summary(volume_reg_ir_nospecies)
+```
+
+
+
+#Compare models using AIC;species & no species for Initial and Rehydrate
+```{r height-AIC}
+model.sel(height_reg_ir, height_reg_ir_nospecies)
+#nospecies is better
+```
+
+```{r width-AIC}
+model.sel(width_reg_ir, width_reg_ir_nospecies)
+#nospecies is better
+```
+
+```{r perimeter-AIC}
+model.sel(perimeter_reg_ir, perimeter_reg_ir_nospecies)
+#with species is better
+```
+
+```{r surf-AIC}
+
+model.sel(surf_reg_ir, surf_reg_ir_nospecies)
+#species is better
+```
+
+```{r tdmc-AIC}
+model.sel(tdmc_reg_ir, tdmc_reg_ir_nospecies)
+#species is better
+```
+
+```{r thick-AIC}
+model.sel(thick_reg_ir, thick_reg_ir_nospecies)
+#nospecies is better, but doesn't really matter cause it's not a good predictor
+```
+
+```{r volume-AIC}
+model.sel(volume_reg_ir, volume_reg_ir_nospecies)
+#with species is better
+```
+
+
+
+#Calculating R^2 Values for the better models
+```{r r^2-height}
+MuMIn::r.squaredGLMM(height_reg_ir_nospecies)
+```
+
+```{r r^2-width}
+MuMIn::r.squaredGLMM(width_reg_ir_nospecies)
 
 ```
+
+```{r r2-perimeter}
+MuMIn::r.squaredGLMM(perimeter_reg_ir)
+```
+
+```{r r2-surf}
+MuMIn::r.squaredGLMM(surf_reg_ir)
+
+```
+
+```{r r2-tdmc}
+MuMIn::r.squaredGLMM(tdmc_reg_ir)
+```
+
+```{r r2-thick}
+MuMIn::r.squaredGLMM(thick_reg_ir_nospecies)
+```
+
+```{r r2-volume}
+MuMIn::r.squaredGLMM(volume_reg_ir)
+```
+
+
+
+#Save rehydration predictions as an object using ggpredict (so we can plot later)
+```{r rehydrate_height - predictions}
+height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") 
+
+height_ir_predictions
+```
+
+```{r rehydrate_width - predictions}
+width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") #max width = 24
+
+# look at the data frame
+width_ir_predictions
+
+```
+
+```{r rehydrate_perimeter - predictions}
+perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") 
+
+# look at the data frame
+perimeter_ir_predictions
+```
+
+```{r rehydrate_surf - predictions}
+surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") 
+
+# look at the data frame
+surf_ir_predictions
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
