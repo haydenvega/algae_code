@@ -231,6 +231,9 @@ width_ir_predictions
 ```{r rehydrate_perimeter - predictions}
 perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") 
 
+perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
 # look at the data frame
 perimeter_ir_predictions
 ```
@@ -238,11 +241,448 @@ perimeter_ir_predictions
 ```{r rehydrate_surf - predictions}
 surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") 
 
+surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
 # look at the data frame
 surf_ir_predictions
 ```
 
+```{r rehydrate_tdmc - predictions}
+tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") 
 
+tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+tdmc_ir_predictions
+
+```
+
+```{r rehydrate_thick - prediction}
+thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]") 
+
+# look at the data frame
+thick_ir_predictions
+
+```
+
+```{r rehydrate_volume - prediction}
+volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") 
+
+volume_ir_predictions_species <- ggpredict(volume_reg_ir, terms = c("vol_r", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+volume_ir_predictions
+
+```
+
+
+#Visualize the rehydrate models without species
+```{r rehydrate_height - PLOT}
+height_ir_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = height_all,
+             aes(x = height_r,
+                 y = height_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = height_ir_predictions,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = height_ir_predictions,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Rehydrate height (mm)",
+       y = "Initial height (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 60, by = 10), 
+                     limits = c(0, 60)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 60, by = 10), 
+                     limits = c(0, 60))
+
+height_ir_plot
+```
+
+```{r rehydrate_width - PLOT}
+
+width_ir_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = width_all,
+             aes(x = width_r,
+                 y = width_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = width_ir_predictions,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = width_ir_predictions,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Rehydrate Width (mm)",
+       y = "Initial width (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 30, by = 5), 
+                     limits = c(0, 30)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 30, by = 5), 
+                     limits = c(0, 30))
+width_ir_plot
+
+```
+
+```{r rehydrate_thick - PLOT}
+thick_ir_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = thickness_all,
+             aes(x = thick_r,
+                 y = thick_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = thick_ir_predictions,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = thick_ir_predictions,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Rehydrate thickness (mm)",
+       y = "Initial thickness (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 2, by = 0.25), 
+                     limits = c(0, 2)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 2, by = 0.25), 
+                     limits = c(0, 2))
+
+thick_ir_plot
+```
+
+
+
+#Visualize rehydrate models with species interactions
+```{r rehydrate_perimeter - PLOT}
+perimeter_ir_plot <- ggplot() +
+  
+  # plot the raw data as points
+  geom_point(data = perimeter_all,
+             aes(x = per_r,
+                 y = per_i),
+             alpha = 0.5,
+             color = model_col,
+             shape = 21) +
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence interval 
+  geom_ribbon(data = perimeter_ir_predictions,
+              aes(x = x,
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high),
+              alpha = 0.2,
+              fill = model_col) +
+  
+  # plot the prediction line
+  geom_line(data = perimeter_ir_predictions,
+            aes(x = x,
+                y = predicted),
+            color = model_col,
+            linewidth = 1) +
+  
+  # labels
+  labs(x = "Rehydrate perimeter (mm)",
+       y = "Initial perimeter (mm)") +
+  
+  # controlling axes to make the plot look square
+  # this makes it easier to see the difference between the model and the 1:1 line
+  scale_x_continuous(breaks = seq(from = 0, to = 375, by = 50), 
+                     limits = c(0, 375)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 375, by = 50), 
+                     limits = c(0, 375))
+perimeter_ir_plot
+
+
+#SPECIES FACET
+
+perimeter_ir_plot_species <- ggplot() +
+  
+  geom_point(data = perimeter_all,
+             aes(x = per_r,
+                 y = per_i,
+                 color = species),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = perimeter_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                fill = species,
+                group = species),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = perimeter_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                color = species,
+                group = species)) +
+  
+  # labels
+  labs(x = "Rehydrate perimeter (mm)",
+       y = "Initial perimeter (mm)") +
+  
+  # theme
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12)) +
+  
+  # facet
+  facet_wrap(~ species, nrow = 2,
+             scales = "free")
+
+
+  perimeter_ir_species_plot
+```
+
+```{r rehydrate_surf - PLOT (species)}
+
+surf_ir_plot_species <- ggplot() +
+  
+  geom_point(data = surf_all,
+             aes(x = surf_r,
+                 y = surf_i,
+                 color = species),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = surf_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                fill = species,
+                group = species),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = surf_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                color = species,
+                group = species)) +
+  
+  # labels
+  labs(x = "Rehydrate surface area (mm^2)",
+       y = "Initial surface area (mm^2)") +
+  
+  # theme
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12)) +
+  
+  # facet
+  facet_wrap(~ species, nrow = 2,
+             scales = "free")
+
+
+  surf_ir_plot_species
+```
+
+```{r rehydrate_tdmc - plot - species}
+
+tdmc_ir_plot_species <- ggplot() +
+  
+  geom_point(data = tdmc_all,
+             aes(x = weight_r,
+                 y = weight_i,
+                 color = species),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = tdmc_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                fill = species,
+                group = species),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = tdmc_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                color = species,
+                group = species)) +
+  
+  # labels
+  labs(x = "Rehydrate weight (g)",
+       y = "Initial weight (g)") +
+  
+  # theme
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12)) +
+  
+  # facet
+  facet_wrap(~ species, nrow = 2,
+             scales = "free")
+
+
+ tdmc_ir_plot_species
+```
+
+
+```{r rehydrate-volume - PLOT}
+volume_ir_plot_species <- ggplot() +
+  
+  geom_point(data = volume_all,
+             aes(x = vol_r,
+                 y = vol_i,
+                 color = species),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = volume_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                fill = species,
+                group = species),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = volume_ir_predictions_species,
+            aes(x = x,
+                y = predicted,
+                color = species,
+                group = species)) +
+  
+  # labels
+  labs(x = "Rehydrate volume (mL)",
+       y = "Initial volume (mL)") +
+  
+  # theme
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12)) +
+  
+  # facet
+  facet_wrap(~ species, nrow = 2,
+             scales = "free")
+
+
+  volume_ir_plot_species
+
+```
 
 
 
