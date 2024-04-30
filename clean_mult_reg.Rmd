@@ -21,7 +21,7 @@ install.packages("effects")
 install.packages("MuMIn")
 ```
 
-```{r}
+```{r include=FALSE}
 library(janitor)
 library(tidyverse)
 library(ggeffects)
@@ -87,7 +87,7 @@ summary(height_reg_ir_nospecies)
 
 ```{r width-models}
 width_reg_ir <- lmer(width_i ~ width_r * species + (1 | individual_id), data = width_all)
-summary(width_reg_ir)
+
 
 width_reg_ir_nospecies <- lmer(width_i ~ width_r + (1 | individual_id), data = width_all)
 summary(width_reg_ir_nospecies)
@@ -318,10 +318,10 @@ height_ir_plot <- ggplot() +
   
   # controlling axes to make the plot look square
   # this makes it easier to see the difference between the model and the 1:1 line
-  scale_x_continuous(breaks = seq(from = 0, to = 60, by = 10), 
-                     limits = c(0, 60)) +
-  scale_y_continuous(breaks = seq(from = 0, to = 60, by = 10), 
-                     limits = c(0, 60))
+  scale_x_continuous(breaks = seq(from = 0, to = 50, by = 10), 
+                     limits = c(0, 50)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 50, by = 10), 
+                     limits = c(0, 50))
 
 height_ir_plot
 ```
