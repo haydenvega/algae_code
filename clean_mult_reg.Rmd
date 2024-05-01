@@ -321,7 +321,11 @@ height_ir_plot <- ggplot() +
   scale_x_continuous(breaks = seq(from = 0, to = 50, by = 10), 
                      limits = c(0, 50)) +
   scale_y_continuous(breaks = seq(from = 0, to = 50, by = 10), 
-                     limits = c(0, 50))
+                     limits = c(0, 50))+
+  #add equation + r squared
+   annotate("text", x = 10, y = 45, label= "y = 1.02x + 0.0407
+R squared = 0.996")
+  
 
 height_ir_plot
 ```
@@ -370,7 +374,11 @@ width_ir_plot <- ggplot() +
   scale_x_continuous(breaks = seq(from = 0, to = 30, by = 5), 
                      limits = c(0, 30)) +
   scale_y_continuous(breaks = seq(from = 0, to = 30, by = 5), 
-                     limits = c(0, 30))
+                     limits = c(0, 30))+
+  #add equation + r squared
+   annotate("text", x = 10, y = 25, label= "y = 0.994x + 0.0865
+R squared = 0.996")
+  
 width_ir_plot
 
 ```
@@ -418,7 +426,10 @@ thick_ir_plot <- ggplot() +
   scale_x_continuous(breaks = seq(from = 0, to = 2, by = 0.25), 
                      limits = c(0, 2)) +
   scale_y_continuous(breaks = seq(from = 0, to = 2, by = 0.25), 
-                     limits = c(0, 2))
+                     limits = c(0, 2))+
+  #add equation + r squared
+   annotate("text", x = 0.75, y = 1.75, label= "y = 0.922x + 0.134
+R squared = 0.882")
 
 thick_ir_plot
 ```
@@ -469,7 +480,10 @@ perimeter_ir_plot <- ggplot() +
   scale_x_continuous(breaks = seq(from = 0, to = 375, by = 50), 
                      limits = c(0, 375)) +
   scale_y_continuous(breaks = seq(from = 0, to = 375, by = 50), 
-                     limits = c(0, 375))
+                     limits = c(0, 375))+
+  #add equation + r squared
+   annotate("text", x = 75, y = 300, label= "y = 1.02x + 0.0407
+R squared = 0.996")
 perimeter_ir_plot
 
 ###############################################
@@ -1090,7 +1104,10 @@ height_ih_plot <- ggplot() +
   scale_x_continuous(breaks = seq(from = 0, to = 50, by = 10), 
                      limits = c(0, 50)) +
   scale_y_continuous(breaks = seq(from = 0, to = 50, by = 10), 
-                     limits = c(0, 50))
+                     limits = c(0, 50))+
+  #add equation + r squared
+   annotate("text", x = 10, y = 45, label= "y = 1.14x + 0.258
+R squared = 0.929")
 
 height_ih_plot
 ```
