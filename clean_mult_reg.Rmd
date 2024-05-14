@@ -246,7 +246,7 @@ surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "speci
 surf_ir_predictions
 ```
 
-```{r rehydrate_tdmc - predictions}
+```{r rehydrate_tdmc - predictions fig.width = 20, fig.height = 10}
 tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") 
 
 tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
@@ -383,7 +383,7 @@ width_ir_plot
 
 ```
 
-```{r rehydrate_thick - PLOT}
+```{r rehydrate_thick - PLOT fig.width = 20, fig.height = 10}
 thick_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1038,11 +1038,9 @@ thick_ih_predictions <- ggpredict(thick_reg_ih_nospecies, terms = "thick_h[0:2]"
 # look at the data frame
 thick_ih_predictions
 
-thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species")) %>% 
+thick_ih_predictions_species <- ggpredict(c(thick_reg_ih, terms = c("thick_h", "species")),  %>% 
   as_tibble() %>% 
   rename(species = group)
-# look at the data frame
-thick_ih_predictions_species
 
 ```
 
@@ -1714,6 +1712,52 @@ volume_ih_plot_species <- ggplot() +
 ```
 
 
+#MAKE the figure with multiple lines for each trait 
+
+#put models into a list
+```{r fig.width = 20, fig.height = 10}
+plot_frame <- as_tibble(surf_ir_predictions)
+new_frame <- as_tibble(perimeter_ir_predictions)
+
+updated <- rbind(plot_frame, new_frame, thick_ir_predictions)
+
+view(updated)
+ 
+
+test <- ggplot() +
+  
+  geom_point(data = updated,
+             aes(x = x,
+                 y = predicted,
+                 ),
+             alpha = 0.5,
+             shape = 21) + 
+  
+  # plot a 1:1 reference line
+  geom_abline(slope = 1, 
+              intercept = 0,
+              linetype = 2,
+              linewidth = 1,
+              color = ref_line_col) +
+  
+  # plot the confidence intervals
+  geom_ribbon(data = updated,
+            aes(x = x,
+                y = predicted,
+                ymin = conf.low,
+                ymax = conf.high,
+                ),
+            alpha = 0.2) +
+  
+  # plot the model predictions
+  geom_line(data = updated,
+            aes(x = x,
+                y = predicted,
+                )) 
+test
+  
+
+```
 
 
 
