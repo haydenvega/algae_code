@@ -213,13 +213,15 @@ MuMIn::r.squaredGLMM(volume_reg_ir)
 
 #Save rehydration predictions as an object using ggpredict (so we can plot later)
 ```{r rehydrate_height - predictions}
-height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") 
+height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") %>% 
+  mutate(trait = "height")
 
 height_ir_predictions
 ```
 
 ```{r rehydrate_width - predictions}
-width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") #max width = 24
+width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") %>% #max width = 24
+  mutate(trait = "width") 
 
 # look at the data frame
 width_ir_predictions
@@ -227,7 +229,8 @@ width_ir_predictions
 ```
 
 ```{r rehydrate_perimeter - predictions}
-perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") 
+perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") %>% 
+  mutate(trait = "perimeter")
 
 perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) %>% 
   as_tibble() %>% 
@@ -237,7 +240,8 @@ perimeter_ir_predictions
 ```
 
 ```{r rehydrate_surf - predictions}
-surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") 
+surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") %>% 
+  mutate(trait = "surface area")
 
 surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "species")) %>% 
   as_tibble() %>% 
@@ -247,7 +251,9 @@ surf_ir_predictions
 ```
 
 ```{r rehydrate_tdmc - predictions fig.width = 20, fig.height = 10}
-tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") 
+tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") %>% 
+  as_tibble() %>% 
+  mutate(trait = "thallus dry matter content")
 
 tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
   as_tibble() %>% 
@@ -258,7 +264,8 @@ tdmc_ir_predictions
 ```
 
 ```{r rehydrate_thick - prediction}
-thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]") 
+thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]")  %>% 
+  mutate(trait = "thickness")
 
 # look at the data frame
 thick_ir_predictions
@@ -266,7 +273,8 @@ thick_ir_predictions
 ```
 
 ```{r rehydrate_volume - prediction}
-volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") 
+volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") %>% 
+  mutate(trait = "volume")
 
 volume_ir_predictions_species <- ggpredict(volume_reg_ir, terms = c("vol_r", "species")) %>% 
   as_tibble() %>% 
@@ -1716,8 +1724,38 @@ volume_ih_plot_species <- ggplot() +
 
 #put models into a list
 ```{r fig.width = 20, fig.height = 10}
+# surf_ir_predictions, perimeter_ir_predictions, tdmc_ir_predictions, height_ir_predictions, width_ir_predictions, thick_ir_predictions, volume_ir_predictions
+
+
 plot_frame <- as_tibble(surf_ir_predictions)
 new_frame <- as_tibble(perimeter_ir_predictions)
+
+init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of each other if they have the same columns
+                      perimeter_ir_predictions, 
+                      tdmc_ir_predictions, 
+                      height_ir_predictions, 
+                      width_ir_predictions, 
+                      thick_ir_predictions, 
+                      volume_ir_predictions) %>% 
+  drop_na() # not sure why there are NA rows at the end of the data frame, but they come from one of the prediction data frames
+
+ggplot(data = init_rehy_df, # using the data frame created above
+       aes(x = x, # x-axis
+           y = predicted )) + # y-axis
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(aes(color = trait), 
+            linewidth = 1) + # plotting model predictions
+  labs(x = "Rehydrated value", # renaming the axes
+       y = "Initial value") +
+  theme(legend.position = "none") +
+  facet_wrap(~trait, scales = "free")
 
 updated <- rbind(plot_frame, new_frame, thick_ir_predictions)
 
