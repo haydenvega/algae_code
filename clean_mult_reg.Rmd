@@ -1727,8 +1727,7 @@ volume_ih_plot_species <- ggplot() +
 # surf_ir_predictions, perimeter_ir_predictions, tdmc_ir_predictions, height_ir_predictions, width_ir_predictions, thick_ir_predictions, volume_ir_predictions
 
 
-plot_frame <- as_tibble(surf_ir_predictions)
-new_frame <- as_tibble(perimeter_ir_predictions)
+
 
 init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of each other if they have the same columns
                       perimeter_ir_predictions, 
@@ -1757,43 +1756,7 @@ ggplot(data = init_rehy_df, # using the data frame created above
   theme(legend.position = "none") +
   facet_wrap(~trait, scales = "free")
 
-updated <- rbind(plot_frame, new_frame, thick_ir_predictions)
 
-view(updated)
- 
-
-test <- ggplot() +
-  
-  geom_point(data = updated,
-             aes(x = x,
-                 y = predicted,
-                 ),
-             alpha = 0.5,
-             shape = 21) + 
-  
-  # plot a 1:1 reference line
-  geom_abline(slope = 1, 
-              intercept = 0,
-              linetype = 2,
-              linewidth = 1,
-              color = ref_line_col) +
-  
-  # plot the confidence intervals
-  geom_ribbon(data = updated,
-            aes(x = x,
-                y = predicted,
-                ymin = conf.low,
-                ymax = conf.high,
-                ),
-            alpha = 0.2) +
-  
-  # plot the model predictions
-  geom_line(data = updated,
-            aes(x = x,
-                y = predicted,
-                )) 
-test
-  
 
 ```
 
