@@ -1,8 +1,11 @@
 ---
 title: "Clean Multiple Regression Code"
-author: "Hayden Vega"
+author: "Hayden Vega and An Bui"
 date: "2024-04-15"
-output: html_document
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r}
