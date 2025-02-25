@@ -1049,7 +1049,7 @@ thick_ih_predictions <- ggpredict(thick_reg_ih_nospecies, terms = "thick_h[0:2]"
 # look at the data frame
 thick_ih_predictions
 
-thick_ih_predictions_species <- ggpredict(c(thick_reg_ih, terms = c("thick_h", "species")),  %>% 
+thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species"))  %>% 
   as_tibble() %>% 
   rename(species = group)
 
@@ -1764,10 +1764,58 @@ ggplot(data = init_rehy_df, # using the data frame created above
 ```
 
 
+```{r fig.width = 20, fig.height = 10}
+init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of each other if they have the same columns
+                      perimeter_ir_predictions, 
+                      tdmc_ir_predictions, 
+                      height_ir_predictions, 
+                      width_ir_predictions, 
+                      thick_ir_predictions, 
+                      volume_ir_predictions) %>% 
+  drop_na() # not sure why there are NA rows at the end of the data frame, but they come from one of the prediction data frames
+
+ggplot(data = init_rehy_df, # using the data frame created above
+       aes(x = x, # x-axis
+           y = predicted, 
+           color = trait)) + # y-axis
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(, 
+            linewidth = 1) + # plotting model predictions
+  labs(x = "Rehydrated value", # renaming the axes
+       y = "Initial value") +
+  theme(legend.position = "none") +
+  facet_wrap(~trait, scales = "free")
+```
 
 
 
 
+```{r fig.width = 20, fig.height = 20}
+init_rehy_df %>% 
+  filter(trait != "thallus dry matter content") %>% 
+  ggplot(aes(x, predicted, color = trait))+
+  geom_line()+
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(, 
+            linewidth = 1) + # plotting model predictions
+  labs(x = "Rehydrated value", # renaming the axes
+       y = "Initial value") +
+  theme(legend.position = "none") 
+```
 
 
 
