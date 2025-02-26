@@ -547,7 +547,7 @@ perimeter_ir_plot_species <- ggplot() +
              scales = "free")
 
 
-  perimeter_ir_species_plot
+  perimeter_ir_plot_species
 ```
 
 ```{r rehydrate_surf - PLOT (species)}
@@ -1798,9 +1798,24 @@ ggplot(data = init_rehy_df, # using the data frame created above
 
 
 ```{r fig.width = 20, fig.height = 20}
-init_rehy_df %>% 
-  filter(trait != "thallus dry matter content") %>% 
-  ggplot(aes(x, predicted, color = trait))+
+init <- init_rehy_df 
+init2 <- as.data.frame(init) %>% 
+  mutate(trait = as.factor(trait))
+
+init2 %>% 
+  mutate(slope = NA
+    #trait == "height" ~ 1, 
+  #  trait == "width" ~ 1,
+   # trait == "perimeter" ~ 1, 
+   # trait == "surface area" ~ 1.5,
+    #trait == "total dry matter content" ~ 2, 
+    #trait == "thickness" ~ 0.9, 
+    #trait == "volume" ~ 3
+    
+  )
+
+init %>% 
+  ggplot(aes(x, predicted, alpha = slope))+
   geom_line()+
   geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
               intercept = 0,
@@ -1814,7 +1829,7 @@ init_rehy_df %>%
             linewidth = 1) + # plotting model predictions
   labs(x = "Rehydrated value", # renaming the axes
        y = "Initial value") +
-  theme(legend.position = "none") 
+  theme(legend.position = "none")
 ```
 
 
