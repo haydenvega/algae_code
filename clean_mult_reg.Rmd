@@ -34,8 +34,15 @@ library(DHARMa)
 library(parameters)
 library(effects)
 library(MuMIn)
+library(waffle)
+library(showtext)
 ```
 
+```{r}
+font_add_google(name = "Marcellus", family = "marc")
+font_add_google(name = "Josefin Sans", family = "josefin")
+font_add_google(name = "Lexend", family = "lex")
+```
 
 
 #Load in data for each trait with individual ID delimiter
@@ -68,7 +75,8 @@ volume_all <- read.csv("final_volume.csv", header = TRUE, sep = ",") %>% separat
 ```{r visualization-objects}
 # ggplot theme
 theme_set(theme_bw() +
-            theme(panel.grid = element_blank()))
+            theme(panel.grid = element_blank(), 
+                  plot.background = element_blank()))
 
 # abline color
 ref_line_col <- "grey"
@@ -1748,7 +1756,7 @@ ggplot(data = init_rehy_df, # using the data frame created above
               intercept = 0,
               color = "grey",
               linetype = 2) + 
-  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  # geom_ribbon(aes(fill = trait, # adding 95% CI 
   #                 ymin = conf.low,
   #                 ymax = conf.high),
   #             alpha = 0.2) +
@@ -1786,7 +1794,7 @@ ggplot(data = init_rehy_df, # using the data frame created above
   #                 ymin = conf.low,
   #                 ymax = conf.high),
   #             alpha = 0.2) +
-  geom_line(, 
+  geom_line( 
             linewidth = 1) + # plotting model predictions
   labs(x = "Rehydrated value", # renaming the axes
        y = "Initial value") +
@@ -1794,28 +1802,41 @@ ggplot(data = init_rehy_df, # using the data frame created above
   facet_wrap(~trait, scales = "free")
 ```
 
+#graph with all the  models close to 1:1
+```{r}
+init23 <- init[init$trait != "thallus dry matter content"]
+init23$opacity <- ifelse(init2$trait == "height", 3,
+                      ifelse(init2$trait == "width", 3,
+                             ifelse(init2$trait == "perimeter", 0.1, 
+                                    ifelse(init2$trait == "surface area", 0.1, 
+                                                  ifelse(init2$trait == "thickness", 0.1, 
+                                                         ifelse(init2$trait == "volume", 0.1, NA ))))))
+
+label_df <- init23 %>% 
+  filter(x == max(x)) %>% 
+  mutate(label = stringr::str_to_title(trait),
+         nudge_y = case_when(
+           trait == "height" ~ 0.7,
+           trait == "width" ~ -0.3,
+           TRUE ~ 0
+         ))
 
 
+title <- "Two predictive trait models based on rehydrated values closely follow a 1:1 relationship"
+subtitle <- "The traits that follow this pattern are Height and Width"
 
-```{r fig.width = 20, fig.height = 20}
-init <- init_rehy_df 
-init2 <- as.data.frame(init) %>% 
-  mutate(trait = as.factor(trait))
+showtext_auto()
+trait_palette <- c("surface area" = "#ffbf00", 
+                   "perimeter" = "#be8333", 
+                  # "thallus dry matter content" = "#54662c", 
+                   "height" = "#009bb0", 
+                   "width" = "#124c54", 
+                   "thickness" = "#368000", 
+                   "volume" = "#b4450e")
 
-init2 %>% 
-  mutate(slope = NA
-    #trait == "height" ~ 1, 
-  #  trait == "width" ~ 1,
-   # trait == "perimeter" ~ 1, 
-   # trait == "surface area" ~ 1.5,
-    #trait == "total dry matter content" ~ 2, 
-    #trait == "thickness" ~ 0.9, 
-    #trait == "volume" ~ 3
-    
-  )
 
-init %>% 
-  ggplot(aes(x, predicted, alpha = slope))+
+ plot_ir_1s <- init23 %>% 
+  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
   geom_line()+
   geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
               intercept = 0,
@@ -1825,11 +1846,124 @@ init %>%
   #                 ymin = conf.low,
   #                 ymax = conf.high),
   #             alpha = 0.2) +
-  geom_line(, 
-            linewidth = 1) + # plotting model predictions
-  labs(x = "Rehydrated value", # renaming the axes
-       y = "Initial value") +
-  theme(legend.position = "none")
+  geom_line(
+            linewidth = 0.5) + # plotting model predictions
+  labs(x = "Rehydrated Value", # renaming the axes
+       y = "Predicted Initial Value", 
+       title = title,
+       subtitle = subtitle) +
+  scale_color_manual(values = trait_palette)+
+  theme(legend.position = "none", 
+        plot.background = element_blank())+
+  geom_text(
+    data = init23 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    aes(label = label, alpha = opacity), 
+    hjust = 0, 
+    nudge_x = 0.1,
+    nudge_y = label_df$nudge_y,
+    size = 5, 
+    family = "lex", 
+    #alpha = opacity
+    #fontface = "light"
+  )+
+  coord_cartesian(xlim = c(0, 7.2), 
+                  clip = "off")+
+  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
+   theme(axis.title.x = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
+         axis.title.y = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
+          plot.title = element_text(family = "lex", 
+                              size = 17, 
+                              hjust = 0.5,
+                              margin = margin(t = 0, r = 1, b = 0.3, l = 0, "cm")),
+    plot.subtitle = element_text(family = "lex",
+                                 size = 15,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
+  scale_x_continuous(expand = c(0, NA))+
+  scale_y_continuous(limits = c(0.8,NA))
+
+```
+
+
+```{r fig.width = 10, fig.height = 10}
+showtext_auto()
+trait_palette <- c("surface area" = "#ffbf00", 
+                   "perimeter" = "#be8333", 
+                  # "thallus dry matter content" = "#54662c", 
+                   "height" = "#009bb0", 
+                   "width" = "#124c54", 
+                   "thickness" = "#368000", 
+                   "volume" = "#b4450e")
+init <- init_rehy_df 
+init2 <- as.data.frame(init) %>% 
+  mutate(trait = as.factor(trait))
+
+init2 <- init[init$trait != "thallus dry matter content"]
+init2$opacity <- ifelse(init2$trait == "height", 1,
+                      ifelse(init2$trait == "width", 1,
+                             ifelse(init2$trait == "perimeter", 3, 
+                                    ifelse(init2$trait == "surface area", 3, 
+                                                  ifelse(init2$trait == "thickness", 1, 
+                                                         ifelse(init2$trait == "volume", 3, NA ))))))
+
+title <- "Predictive models based on rehydrated measurements vary by trait"
+subtitle <- "The traits that deviate the most are Perimeter, Volume, and Surface Area"
+plot_ir_deviants <- init2 %>% 
+  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
+  geom_line()+
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(
+            linewidth = 1.5) + # plotting model predictions
+  labs(x = "Rehydrated Value", # renaming the axes
+       y = "Predicted Initial Value", 
+       title = title,
+       subtitle = subtitle) +
+  scale_color_manual(values = trait_palette)+
+  theme(legend.position = "none", 
+        plot.background = element_blank())+
+  geom_text(
+    data = init2 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    aes(label = label), 
+    hjust = 0, 
+    nudge_x = 0.1, 
+    size = 5, 
+    family = "lex"
+    #fontface = "light"
+  )+
+  coord_cartesian(xlim = c(0, 7.2), 
+                  clip = "off")+
+  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
+   theme(axis.title.x = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
+         axis.title.y = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
+          plot.title = element_text(family = "lex", 
+                              size = 17, 
+                              hjust = 0.1,
+                              margin = margin(t = 0, r = 0, b = 0.3, l = 0, "cm")),
+    plot.subtitle = element_text(family = "lex",
+                                 size = 15,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
+  scale_x_continuous(expand = c(0, NA))+
+  scale_y_continuous(limits = c(0.8,NA))
 ```
 
 
