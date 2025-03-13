@@ -1805,12 +1805,12 @@ ggplot(data = init_rehy_df, # using the data frame created above
 #graph with all the  models close to 1:1
 ```{r}
 init23 <- init[init$trait != "thallus dry matter content"]
-init23$opacity <- ifelse(init2$trait == "height", 3,
-                      ifelse(init2$trait == "width", 3,
-                             ifelse(init2$trait == "perimeter", 0.1, 
-                                    ifelse(init2$trait == "surface area", 0.1, 
-                                                  ifelse(init2$trait == "thickness", 0.1, 
-                                                         ifelse(init2$trait == "volume", 0.1, NA ))))))
+init23$opacity <- ifelse(init23$trait == "height", 3,
+                      ifelse(init23$trait == "width", 3,
+                             ifelse(init23$trait == "perimeter", 0.1, 
+                                    ifelse(init23$trait == "surface area", 0.1, 
+                                                  ifelse(init23$trait == "thickness", 0.1, 
+                                                         ifelse(init23$trait == "volume", 0.1, NA ))))))
 
 label_df <- init23 %>% 
   filter(x == max(x)) %>% 
@@ -1956,7 +1956,7 @@ plot_ir_deviants <- init2 %>%
                                  margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
           plot.title = element_text(family = "lex", 
                               size = 17, 
-                              hjust = 0.1,
+                              hjust = 0.5,
                               margin = margin(t = 0, r = 0, b = 0.3, l = 0, "cm")),
     plot.subtitle = element_text(family = "lex",
                                  size = 15,
