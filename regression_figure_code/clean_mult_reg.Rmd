@@ -9,28 +9,25 @@ output:
 description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
 ---
 
+# 1. Set up
+
 ```{r}
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##                                    Setup                                 ----
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 #.........................Install Packages.........................
 
-install.packages("ggeffects")
-install.packages("DHARMa")
-install.packages("sjlabelled")
-install.packages("lme4")
-install.packages("lme4", type = "source")
-oo <- options(repos = "https://cran.r-project.org/")
-install.packages("Matrix")
-install.packages("lme4")
-install.packages("glmmTMG")
-install.packages("parameters")
-options(oo)
-install.packages("effects")
-install.packages("MuMIn")
-install.packages("lmerTest")
+# install.packages("ggeffects")
+# install.packages("DHARMa")
+# install.packages("sjlabelled")
+# install.packages("lme4")
+# install.packages("lme4", type = "source")
+# oo <- options(repos = "https://cran.r-project.org/")
+# install.packages("Matrix")
+# install.packages("lme4")
+# install.packages("glmmTMG")
+# install.packages("parameters")
+# options(oo)
+# install.packages("effects")
+# install.packages("MuMIn")
+# install.packages("lmerTest")
 #.........................Load Libraries.........................
 library(janitor)
 library(tidyverse)
@@ -99,12 +96,13 @@ volume_all <- read.csv("../data/preliminary_data/final_volume.csv", header = TRU
 
 ```
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##                      Making Mixed Effect Linear Models                   ----
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 2. Linear mixed effect models
 
-#    Models with Rehydrated Traits as Predictor Variables     ~~~
-     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## a. initial height predicted by rehydrate height and/or species
+
+This section includes code to fit linear mixed effect models to answer the question: how do rehydrated trait values predict initial trait values? Each trait is predicted by two models: (describe model differences). We view model summaries using `summary()`.
+
+### Height
      
      
 ```{r height-models, include=FALSE}
@@ -131,6 +129,8 @@ summary(height_reg_ir_nospecies)
 #                                                                              .
 #...............................................................................
 ```
+
+### Width
 
 ```{r width-models}
 #..........................Width Models.........................
