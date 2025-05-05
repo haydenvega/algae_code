@@ -62,7 +62,9 @@ ref_line_col <- "grey"
 model_col <- "darkblue"
 
 #.........................Reading in Data for all Seven Traits and Treatments.........................
-       #each model has an added column (specimen) that denotes subsample
+ 
+# Each data frame is read in, then specimen_id column is separated to create new 
+# columns, then we create an individual ID column from date, site, and individual.
 
 # using read_csv and `here` package to get rid of file paths
 height_all <- read_csv(here("data", "preliminary_data", "final_height.csv")) |> 
