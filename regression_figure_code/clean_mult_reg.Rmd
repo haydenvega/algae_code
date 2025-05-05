@@ -479,6 +479,57 @@ model.sel(volume_reg_ir, volume_reg_ir_nospecies)
 #with species is better
 ```
 
+     # AIC Comparisons for Models With Herbarium Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
+```{r height-herbarium-AIC}
+#..........................Comparisons for Height Models........................
+
+model.sel(height_reg_ih, height_reg_ih_nospecies)
+#nospecies is better
+```
+
+```{r width-herbarium-AIC}
+#..........................Comparisons for Width Models........................
+
+model.sel(width_reg_ih, width_reg_ih_nospecies)
+#species is better
+```
+
+```{r perimeter-herbarium-AIC}
+#.......................Comparisons for Perimeter Models........................
+
+model.sel(perimeter_reg_ih, perimeter_reg_ih_nospecies)
+#with species is better
+```
+
+```{r surf-herbarium-AIC}
+#....................Comparisons for Surface Area Models........................
+
+model.sel(surf_reg_ih, surf_reg_ih_nospecies)
+#species is better
+```
+
+```{r tdmc-herbarium-AIC}
+#..........................Comparisons for Weight Models........................
+
+model.sel(tdmc_reg_ih, tdmc_reg_ih_nospecies)
+#species is better
+```
+
+```{r thick-herbarium-AIC}
+#.......................Comparisons for Thickness Models........................
+
+model.sel(thick_reg_ih, thick_reg_ih_nospecies)
+#species is better, but doesn't really matter cause it's not a good predictor
+```
+
+```{r volume-herbarium-AIC}
+#..........................Comparisons for Volume Models........................
+
+model.sel(volume_reg_ih, volume_reg_ih_nospecies)
+#with species is better
+```
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Calculating R Squared Values for the Best Fitting Models From Each Trait and Treatment---
@@ -487,39 +538,108 @@ model.sel(volume_reg_ir, volume_reg_ir_nospecies)
      # R Values for Models with Rehydrated Traits as Predictor Variables ~~~
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r r^2-height}
+#..................R^2 for Height Model without species interaction term........
+
 MuMIn::r.squaredGLMM(height_reg_ir_nospecies)
+
 ```
 
 ```{r r^2-width}
+#..................R^2 for Width Model without species interaction term........
+
 MuMIn::r.squaredGLMM(width_reg_ir_nospecies)
 
 ```
 
 ```{r r2-perimeter}
+#...............R^2 for Perimeter Model with species interaction term........
+
 MuMIn::r.squaredGLMM(perimeter_reg_ir)
 ```
 
 ```{r r2-surf}
+#............R^2 for Surface Area Model with species interaction term........
+
 MuMIn::r.squaredGLMM(surf_reg_ir)
 
 ```
 
 ```{r r2-tdmc}
+#..................R^2 for Weight Model with species interaction term........
+
 MuMIn::r.squaredGLMM(tdmc_reg_ir)
 ```
 
 ```{r r2-thick}
+#...............R^2 for Thickness Model without species interaction term........
+
 MuMIn::r.squaredGLMM(thick_reg_ir_nospecies)
 ```
 
 ```{r r2-volume}
+#..................R^2 for Volume Model with species interaction term........
+
 MuMIn::r.squaredGLMM(volume_reg_ir)
 ```
 
+     # R Values for Models with Herbarium Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
+```{r r^2-herbarium-height}
+#..................R^2 for Height Model without species interaction term........
 
+MuMIn::r.squaredGLMM(height_reg_ih_nospecies)
+```
 
-#Save rehydration predictions as an object using ggpredict (so we can plot later)
+```{r r^2-herbarium-width}
+#..................R^2 for Width Model with species interaction term............
+
+MuMIn::r.squaredGLMM(width_reg_ih)
+
+```
+
+```{r r2-herbarium-perimeter}
+#...............R^2 for Perimeter Model with species interaction term........
+
+MuMIn::r.squaredGLMM(perimeter_reg_ih)
+```
+
+```{r r2-herbarium-surf}
+#............R^2 for Surface Area Model with species interaction term........
+
+MuMIn::r.squaredGLMM(surf_reg_ih)
+
+```
+
+```{r r2-herbarium-tdmc}
+#..................R^2 for Weight Model with species interaction term........
+
+MuMIn::r.squaredGLMM(tdmc_reg_ih)
+```
+
+```{r r2-herbarium-thick}
+#..................R^2 for Thickness Model with species interaction term........
+
+MuMIn::r.squaredGLMM(thick_reg_ih)
+```
+
+```{r r2-herbarium-volume}
+#..................R^2 for Volume Model with species interaction term...........
+
+MuMIn::r.squaredGLMM(volume_reg_ih)
+```
+
+     
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##        Saving Model Predictions as Objects for Later Visualization       ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+     # Predictions for Models with Rehydrated Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r rehydrate_height - predictions}
+     #........Predictions for the Height Model Without Species........
+
 height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") %>% 
   mutate(trait = "height")
 
@@ -527,6 +647,8 @@ height_ir_predictions
 ```
 
 ```{r rehydrate_width - predictions}
+     #........Predictions for the Width Model Without Species........
+
 width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") %>% #max width = 24
   mutate(trait = "width") 
 
@@ -536,20 +658,25 @@ width_ir_predictions
 ```
 
 ```{r rehydrate_perimeter - predictions}
+     #........Predictions for the Height Model With Species........
 perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") %>% 
   mutate(trait = "perimeter")
 
+     #...........Incorporating Species as a Prediction Term...........
 perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) %>% 
-  as_tibble() %>% 
+  as_tibble() %>% #converting to a tibble
   rename(species = group)
 # look at the data frame
 perimeter_ir_predictions
 ```
 
 ```{r rehydrate_surf - predictions}
+     #........Predictions for the Height Model With Species........
+
 surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") %>% 
   mutate(trait = "surface area")
 
+     #...........Incorporating Species as a Prediction Term...........
 surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "species")) %>% 
   as_tibble() %>% 
   rename(species = group)
@@ -558,10 +685,13 @@ surf_ir_predictions
 ```
 
 ```{r rehydrate_tdmc - predictions fig.width = 20, fig.height = 10}
+     #........Predictions for the Weight Model With Species........
+
 tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") %>% 
   as_tibble() %>% 
   mutate(trait = "thallus dry matter content")
 
+     #...........Incorporating Species as a Prediction Term...........
 tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
   as_tibble() %>% 
   rename(species = group)
@@ -571,6 +701,8 @@ tdmc_ir_predictions
 ```
 
 ```{r rehydrate_thick - prediction}
+     #........Predictions for the Thickness Model Without Species........
+
 thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]")  %>% 
   mutate(trait = "thickness")
 
@@ -580,9 +712,12 @@ thick_ir_predictions
 ```
 
 ```{r rehydrate_volume - prediction}
+     #........Predictions for the Volume Model With Species........
+
 volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") %>% 
   mutate(trait = "volume")
 
+     #...........Incorporating Species as a Prediction Term...........
 volume_ir_predictions_species <- ggpredict(volume_reg_ir, terms = c("vol_r", "species")) %>% 
   as_tibble() %>% 
   rename(species = group)
@@ -591,9 +726,115 @@ volume_ir_predictions
 
 ```
 
+     # Predictions for Models with Herbarium Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
+```{r height-herbarium - predictions}
 
-#Visualize the rehydrate models without species
+     #........Predictions for the Height Model Without Species........
+height_ih_predictions <- ggpredict(height_reg_ih_nospecies, terms = "height_h[0:45]") 
+
+height_ih_predictions
+```
+
+```{r width-herbarium - predictions}
+    
+ #........Predictions for the Width Model Without Species........
+width_ih_predictions <- ggpredict(width_reg_ih_nospecies, terms = "width_h[0:30]") #max width = 24
+
+# look at the data frame
+width_ih_predictions
+
+     #...........Incorporating Species as a Prediction Term...........
+width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+
+
+```
+
+```{r perimeter-herbarium - predictions}
+     
+#........Predictions for the Perimeter Model With Species........
+perimeter_ih_predictions <- ggpredict(perimeter_reg_ih, terms = "per_h[0:375]") 
+
+     #...........Incorporating Species as a Prediction Term...........
+perimeter_ih_predictions_species <- ggpredict(perimeter_reg_ih, terms = c("per_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+perimeter_ih_predictions_species
+```
+
+```{r surf-herbarium - predictions}
+   
+ #........Predictions for the Surface Area Model With Species........
+surf_ih_predictions <- ggpredict(surf_reg_ih, terms = "surf_h[0:430]") 
+
+     #...........Incorporating Species as a Prediction Term...........
+surf_ih_predictions_species <- ggpredict(surf_reg_ih, terms = c("surf_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+surf_ih_predictions_species
+```
+
+```{r tdmc-herbarium - predictions}
+
+     #........Predictions for the Weight Model With Species........
+
+tdmc_ih_predictions <- ggpredict(tdmc_reg_ih, terms = "weight_h[0:29050]") 
+
+     #...........Incorporating Species as a Prediction Term...........
+tdmc_ih_predictions_species <- ggpredict(tdmc_reg_ih, terms = c("weight_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+tdmc_ih_predictions
+tdmc_ih_predictions_species
+
+```
+
+```{r thick-herbarium - prediction}
+     #........Predictions for the Thickness Model Without Species........
+
+thick_ih_predictions <- ggpredict(thick_reg_ih_nospecies, terms = "thick_h[0:2]") 
+
+# look at the data frame
+thick_ih_predictions
+
+     #...........Incorporating Species as a Prediction Term...........
+thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species"))  %>% 
+  as_tibble() %>% 
+  rename(species = group)
+
+```
+
+```{r volume-herbarium - prediction}
+
+     #........Predictions for the Volume Model With Species........
+volume_ih_predictions <- ggpredict(volume_reg_ih, terms = "vol_h[0:30]") 
+
+     #...........Incorporating Species as a Prediction Term...........
+volume_ih_predictions_species <- ggpredict(volume_reg_ih, terms = c("vol_h", "species")) %>% 
+  as_tibble() %>% 
+  rename(species = group)
+# look at the data frame
+volume_ih_predictions
+volume_ih_predictions_species
+
+```
+     
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                             Visualizing Models                           ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+     #        Visualizing Rehydrate Models Without Species         ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r rehydrate_height - PLOT}
+
+     #.....Scatterplot of height_r(x) as Predictor of height_i(y).....
+
 height_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -647,6 +888,8 @@ height_ir_plot
 
 ```{r rehydrate_width - PLOT}
 
+     #.....Scatterplot of width_r(x) as Predictor of width_i(y).....
+
 width_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -699,6 +942,9 @@ width_ir_plot
 ```
 
 ```{r rehydrate_thick - PLOT fig.width = 20, fig.height = 10}
+     
+     #.....Scatterplot of thickness_r(x) as Predictor of thickness_i(y).....
+
 thick_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -749,10 +995,10 @@ R squared = 0.882")
 thick_ir_plot
 ```
 
-
-
-#Visualize rehydrate models with species interactions
+     #          Visualizing Rehydrate Models With Species          ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r rehydrate_perimeter - PLOT}
+     #.....Scatterplot of perimeter_r(x) as Predictor of perimeter_i(y).....
 perimeter_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -801,8 +1047,7 @@ perimeter_ir_plot <- ggplot() +
 R squared = 0.996")
 perimeter_ir_plot
 
-###############################################
-#SPECIES FACET
+  #.Scatterplot of height_r(x) as Predictor of height_i(y) with a species facet.
 
 perimeter_ir_plot_species <- ggplot() +
   
@@ -856,6 +1101,8 @@ perimeter_ir_plot_species <- ggplot() +
 
 ```{r rehydrate_surf - PLOT (species)}
 
+     #.....Scatterplot of surf_r(x) as Predictor of surf_i(y).....
+
 surf_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -901,9 +1148,7 @@ surf_ir_plot <- ggplot() +
                      limits = c(0, 450))
 surf_ir_plot
 
-###########################################
-#SPECIES FACET
-
+ #.Scatterplot of surf_r(x) as Predictor of surf_i(y) with a species facet.
 surf_ir_plot_species <- ggplot() +
   
   geom_point(data = surf_all,
@@ -955,6 +1200,8 @@ surf_ir_plot_species <- ggplot() +
 ```
 
 ```{r rehydrate_tdmc - plot - species}
+    
+ #.....Scatterplot of weight_r(x) as Predictor of weight_i(y).....
 
 tdmc_ir_plot <- ggplot() +
   
@@ -1000,8 +1247,9 @@ tdmc_ir_plot <- ggplot() +
   scale_y_continuous(breaks = seq(from = 0, to = 4850, by = 810), 
                      limits = c(0, 4850))
 tdmc_ir_plot
-###############################################################################
-#SPECIES FACET
+
+  #.Scatterplot of weight_r(x) as Predictor of weight_i(y) with a species facet.
+
 
 tdmc_ir_plot_species <- ggplot() +
   
@@ -1054,6 +1302,9 @@ tdmc_ir_plot_species <- ggplot() +
 ```
 
 ```{r rehydrate-volume - PLOT}
+     
+#.....Scatterplot of vol_r(x) as Predictor of vol_i(y).....
+
 volume_ir_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1099,8 +1350,8 @@ volume_ir_plot <- ggplot() +
                      limits = c(0, 15))
 volume_ir_plot
 
-################################################################################
-#SPECIES FACET
+  #.Scatterplot of volume_r(x) as Predictor of volume_i(y) with a species facet.
+
 
 volume_ir_plot_species <- ggplot() +
   
@@ -1153,168 +1404,12 @@ volume_ir_plot_species <- ggplot() +
 
 ```
 
-
-
-
-
-
-
-
-
-
-
-#USE AIC TO SEE WHICH MODELS ARE BETTER FOR HERBARIUM AND INITIAL
-```{r height-herbarium-AIC}
-model.sel(height_reg_ih, height_reg_ih_nospecies)
-#nospecies is better
-```
-
-```{r width-herbarium-AIC}
-model.sel(width_reg_ih, width_reg_ih_nospecies)
-#species is better
-```
-
-```{r perimeter-herbarium-AIC}
-model.sel(perimeter_reg_ih, perimeter_reg_ih_nospecies)
-#with species is better
-```
-
-```{r surf-herbarium-AIC}
-
-model.sel(surf_reg_ih, surf_reg_ih_nospecies)
-#species is better
-```
-
-```{r tdmc-herbarium-AIC}
-model.sel(tdmc_reg_ih, tdmc_reg_ih_nospecies)
-#species is better
-```
-
-```{r thick-herbarium-AIC}
-model.sel(thick_reg_ih, thick_reg_ih_nospecies)
-#species is better, but doesn't really matter cause it's not a good predictor
-```
-
-```{r volume-herbarium-AIC}
-model.sel(volume_reg_ih, volume_reg_ih_nospecies)
-#with species is better
-```
-
-
-
-#Calculating R^2 Values for the better models HERBARIUM AND INITIAL
-```{r r^2-herbarium-height}
-MuMIn::r.squaredGLMM(height_reg_ih_nospecies)
-```
-
-```{r r^2-herbarium-width}
-MuMIn::r.squaredGLMM(width_reg_ih)
-
-```
-
-```{r r2-herbarium-perimeter}
-MuMIn::r.squaredGLMM(perimeter_reg_ih)
-```
-
-```{r r2-herbarium-surf}
-MuMIn::r.squaredGLMM(surf_reg_ih)
-
-```
-
-```{r r2-herbarium-tdmc}
-MuMIn::r.squaredGLMM(tdmc_reg_ih)
-```
-
-```{r r2-herbarium-thick}
-MuMIn::r.squaredGLMM(thick_reg_ih)
-```
-
-```{r r2-herbarium-volume}
-MuMIn::r.squaredGLMM(volume_reg_ih)
-```
-
-
-
-#Save HERBARIUM predictions as an object using ggpredict (so we can plot later)
-```{r height-herbarium - predictions}
-height_ih_predictions <- ggpredict(height_reg_ih_nospecies, terms = "height_h[0:45]") 
-
-height_ih_predictions
-```
-
-```{r width-herbarium - predictions}
-width_ih_predictions <- ggpredict(width_reg_ih_nospecies, terms = "width_h[0:30]") #max width = 24
-
-# look at the data frame
-width_ih_predictions
-
-width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "species")) %>% 
-  as_tibble() %>% 
-  rename(species = group)
-
-
-```
-
-```{r perimeter-herbarium - predictions}
-perimeter_ih_predictions <- ggpredict(perimeter_reg_ih, terms = "per_h[0:375]") 
-
-perimeter_ih_predictions_species <- ggpredict(perimeter_reg_ih, terms = c("per_h", "species")) %>% 
-  as_tibble() %>% 
-  rename(species = group)
-# look at the data frame
-perimeter_ih_predictions_species
-```
-
-```{r surf-herbarium - predictions}
-surf_ih_predictions <- ggpredict(surf_reg_ih, terms = "surf_h[0:430]") 
-
-surf_ih_predictions_species <- ggpredict(surf_reg_ih, terms = c("surf_h", "species")) %>% 
-  as_tibble() %>% 
-  rename(species = group)
-# look at the data frame
-surf_ih_predictions_species
-```
-
-```{r tdmc-herbarium - predictions}
-tdmc_ih_predictions <- ggpredict(tdmc_reg_ih, terms = "weight_h[0:29050]") 
-
-tdmc_ih_predictions_species <- ggpredict(tdmc_reg_ih, terms = c("weight_h", "species")) %>% 
-  as_tibble() %>% 
-  rename(species = group)
-# look at the data frame
-tdmc_ih_predictions
-tdmc_ih_predictions_species
-
-```
-
-```{r thick-herbarium - prediction}
-thick_ih_predictions <- ggpredict(thick_reg_ih_nospecies, terms = "thick_h[0:2]") 
-
-# look at the data frame
-thick_ih_predictions
-
-thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species"))  %>% 
-  as_tibble() %>% 
-  rename(species = group)
-
-```
-
-```{r volume-herbarium - prediction}
-volume_ih_predictions <- ggpredict(volume_reg_ih, terms = "vol_h[0:30]") 
-
-volume_ih_predictions_species <- ggpredict(volume_reg_ih, terms = c("vol_h", "species")) %>% 
-  as_tibble() %>% 
-  rename(species = group)
-# look at the data frame
-volume_ih_predictions
-volume_ih_predictions_species
-
-```
-
-
-
-#Visualize the HERBARIUM models without species
+     #        Visualizing Herbarium Models Without Species         ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
 ```{r height-herbarium - PLOT}
+
+     #....Scatterplot of height_h(x) as a Predictor of height_i(y)....
 height_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1367,7 +1462,8 @@ height_ih_plot
 
 #Visualize HERBARIUM models with species
 ```{r width-herbarium - PLOT}
-
+    
+ #....Scatterplot of width_h(x) as a Predictor of width_i(y)....
 width_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1413,9 +1509,7 @@ width_ih_plot <- ggplot() +
                      limits = c(0, 20))
 width_ih_plot
 
-###############################################################################
-#SPECIES FACET
-
+  #.Scatterplot of width_h(x) as Predictor of width_i(y) with a species facet.
 width_ih_plot_species <- ggplot() +
   
   geom_point(data = width_all,
@@ -1468,6 +1562,8 @@ width_ih_plot_species <- ggplot() +
 ```
 
 ```{r thick-herbarium - PLOT}
+
+     #....Scatterplot of thick_h(x) as a Predictor of thick_i(y)....
 thick_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1514,9 +1610,7 @@ thick_ih_plot <- ggplot() +
 
 thick_ih_plot
 
-################################################################################
-#SPECIES FACET
-
+  #.Scatterplot of thick_h(x) as Predictor of thick_i(y) with a species facet.
 thick_ih_plot_species <- ggplot() +
   
   geom_point(data = thickness_all,
@@ -1569,6 +1663,8 @@ thick_ih_plot_species <- ggplot() +
 ```
 
 ```{r perimeter-herbarium - PLOT}
+
+     #....Scatterplot of per_h(x) as a Predictor of per_i(y)....
 perimeter_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1614,9 +1710,8 @@ perimeter_ih_plot <- ggplot() +
                      limits = c(0, 375))
 perimeter_ih_plot
 
-###############################################
-#SPECIES FACET
 
+  #.Scatterplot of per_h(x) as Predictor of per_i(y) with a species facet.
 perimeter_ih_plot_species <- ggplot() +
   
   geom_point(data = perimeter_all,
@@ -1669,6 +1764,7 @@ perimeter_ih_plot_species <- ggplot() +
 
 ```{r surf-herbarium - PLOT (species)}
 
+     #....Scatterplot of surf_h(x) as a Predictor of surf_i(y)....
 surf_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1714,9 +1810,7 @@ surf_ih_plot <- ggplot() +
                      limits = c(0, 450))
 surf_ih_plot
 
-###########################################
-#SPECIES FACET
-
+  #.Scatterplot of surf_h(x) as Predictor of surf_i(y) with a species facet.
 surf_ih_plot_species <- ggplot() +
   
   geom_point(data = surf_all,
@@ -1769,6 +1863,7 @@ surf_ih_plot_species <- ggplot() +
 
 ```{r tdmc-herbarium - plot - species}
 
+     #....Scatterplot of weight_h(x) as a Predictor of weight_i(y)....
 tdmc_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1813,9 +1908,9 @@ tdmc_ih_plot <- ggplot() +
   scale_y_continuous(breaks = seq(from = 0, to = 4850, by = 810), 
                      limits = c(0, 4850))
 tdmc_ih_plot
-###############################################################################
-#SPECIES FACET
 
+
+  #.Scatterplot of weight_h(x) as Predictor of weight_i(y) with a species facet.
 tdmc_ih_plot_species <- ggplot() +
   
   geom_point(data = tdmc_all,
@@ -1867,6 +1962,8 @@ tdmc_ih_plot_species <- ggplot() +
 ```
 
 ```{r volume-herbarium - PLOT}
+
+     #....Scatterplot of vol_h(x) as a Predictor of vol_i(y)....
 volume_ih_plot <- ggplot() +
   
   # plot the raw data as points
@@ -1912,9 +2009,8 @@ volume_ih_plot <- ggplot() +
                      limits = c(0, 15))
 volume_ih_plot
 
-################################################################################
-#SPECIES FACET
 
+  #.Scatterplot of vol_h(x) as Predictor of vol_i(y) with a species facet.
 volume_ih_plot_species <- ggplot() +
   
   geom_point(data = volume_all,
@@ -1967,15 +2063,17 @@ volume_ih_plot_species <- ggplot() +
 ```
 
 
-#MAKE the figure with multiple lines for each trait 
+     #              Visualizing Rehydrate Summary Graphs           ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-#put models into a list
 ```{r fig.width = 20, fig.height = 10}
 # surf_ir_predictions, perimeter_ir_predictions, tdmc_ir_predictions, height_ir_predictions, width_ir_predictions, thick_ir_predictions, volume_ir_predictions
 
 
 
+     #.........................Data Wrangling.........................
 
+#creating a list of all the predictions for rehydrate traits
 init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of each other if they have the same columns
                       perimeter_ir_predictions, 
                       tdmc_ir_predictions, 
@@ -1985,6 +2083,8 @@ init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of 
                       volume_ir_predictions) %>% 
   drop_na() # not sure why there are NA rows at the end of the data frame, but they come from one of the prediction data frames
 
+
+     #.........A scatterplot with all seven model predictions.........
 ggplot(data = init_rehy_df, # using the data frame created above
        aes(x = x, # x-axis
            y = predicted )) + # y-axis
@@ -2008,7 +2108,292 @@ ggplot(data = init_rehy_df, # using the data frame created above
 ```
 
 
+     #  Creating a scatterplot that highlights 1:1 relationships   ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+```{r}
+     #..............................Setup.............................
+
+#Using the dataframe with all our rehydrate trait predictions to assign an opacity
+#value to all traits. 3 signifies a close 1:1 relationship while 0.1 is a weak 1:1.
+
+init23 <- init[init$trait != "thallus dry matter content"]
+init23$opacity <- ifelse(init23$trait == "height", 3,
+                      ifelse(init23$trait == "width", 3,
+                             ifelse(init23$trait == "perimeter", 0.1, 
+                                    ifelse(init23$trait == "surface area", 0.1, 
+                                                  ifelse(init23$trait == "thickness", 0.1, 
+                                                         ifelse(init23$trait == "volume", 0.1, NA ))))))
+     #........manually offsetting height and width line labels........
+label_df <- init23 %>% 
+  filter(x == max(x)) %>% 
+  mutate(label = stringr::str_to_title(trait),
+         nudge_y = case_when(
+           trait == "height" ~ 0.7,
+           trait == "width" ~ -0.3,
+           TRUE ~ 0
+         ))
+
+     #........................generating titles.......................
+title <- "Two predictive trait models based on rehydrated values closely follow a 1:1 relationship"
+subtitle <- "The traits that follow this pattern are Height and Width"
+
+     #..............assigning each trait a unique color...............
+showtext_auto()
+trait_palette <- c("surface area" = "#ffbf00", 
+                   "perimeter" = "#be8333", 
+                  # "thallus dry matter content" = "#54662c", 
+                   "height" = "#009bb0", 
+                   "width" = "#124c54", 
+                   "thickness" = "#368000", 
+                   "volume" = "#b4450e")
+
+     #........scatterplot with all rehydrate trait predictions........
+     #......rehydrated trait value (x) & initial trait values (y).....
+     #..excludes tdmc, and highlights traits with 1:1 relationships...
+ plot_ir_1s <- init23 %>% 
+  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
+  geom_line()+
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(
+            linewidth = 0.5) + # plotting model predictions
+  labs(x = "Rehydrated Value", # renaming the axes
+       y = "Predicted Initial Value", 
+       title = title,
+       subtitle = subtitle) +
+  scale_color_manual(values = trait_palette)+ #assigning values a color based on trait from our palette
+  theme(legend.position = "none", 
+        plot.background = element_blank())+
+ #formatting line labels
+    geom_text(
+    data = init23 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    aes(label = label, alpha = opacity), 
+    hjust = 0, 
+    nudge_x = 0.1,
+    nudge_y = label_df$nudge_y,
+    size = 5, 
+    family = "lex", 
+    #alpha = opacity
+    #fontface = "light"
+  )+
+   #formatting text and margins
+  coord_cartesian(xlim = c(0, 7.2), 
+                  clip = "off")+
+  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
+   theme(axis.title.x = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
+         axis.title.y = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
+          plot.title = element_text(family = "lex", 
+                              size = 17, 
+                              hjust = 0.5,
+                              margin = margin(t = 0, r = 1, b = 0.3, l = 0, "cm")),
+    plot.subtitle = element_text(family = "lex",
+                                 size = 15,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
+  scale_x_continuous(expand = c(0, NA))+
+  scale_y_continuous(limits = c(0.8,NA))
+
+```
+
+     # A scatterplot highlighting relationships that deviate from 1:1 ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```{r fig.width = 10, fig.height = 10}
+
+#.........................assigning opacity values (manually).........................
+
+#traits that follow a 1:1 relationship are assigned 1, while deviants from 1:1
+#are assigned 3. 
+showtext_auto()
+init <- init_rehy_df 
+init2 <- as.data.frame(init) %>% 
+  mutate(trait = as.factor(trait))
+
+init2 <- init[init$trait != "thallus dry matter content"]
+init2$opacity <- ifelse(init2$trait == "height", 1,
+                      ifelse(init2$trait == "width", 1,
+                             ifelse(init2$trait == "perimeter", 3, 
+                                    ifelse(init2$trait == "surface area", 3, 
+                                                  ifelse(init2$trait == "thickness", 1, 
+                                                         ifelse(init2$trait == "volume", 3, NA ))))))
+
+#.........................titles and palettes.........................
+
+title <- "Predictive models based on rehydrated measurements vary by trait"
+subtitle <- "The traits that deviate the most are Perimeter, Volume, and Surface Area"
+
+showtext_auto()
+trait_palette <- c("surface area" = "#ffbf00", 
+                   "perimeter" = "#be8333", 
+                  # "thallus dry matter content" = "#54662c", 
+                   "height" = "#009bb0", 
+                   "width" = "#124c54", 
+                   "thickness" = "#368000", 
+                   "volume" = "#b4450e")
+
+#.........................plotting.........................
+#......rehydrate trait values (x) & initial trait values (y).....
+
+plot_ir_deviants <- init2 %>% 
+  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
+  geom_line()+
+  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
+              intercept = 0,
+              color = "grey",
+              linetype = 2) + 
+  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
+  #                 ymin = conf.low,
+  #                 ymax = conf.high),
+  #             alpha = 0.2) +
+  geom_line(
+            linewidth = 1.5) + # plotting model predictions
+  labs(x = "Rehydrated Value", # renaming the axes
+       y = "Predicted Initial Value", 
+       title = title,
+       subtitle = subtitle) +
+  scale_color_manual(values = trait_palette)+ #assigning palette colors to traits
+  theme(legend.position = "none", 
+        plot.background = element_blank())+
+  geom_text( #formatting model labels
+    data = init2 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    aes(label = label), 
+    hjust = 0, 
+    nudge_x = 0.1, 
+    size = 5, 
+    family = "lex"
+    #fontface = "light"
+  )+
+  #manually adjusting text elements and plot dimensions
+  coord_cartesian(xlim = c(0, 7.2), 
+                  clip = "off")+
+  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
+   theme(axis.title.x = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
+         axis.title.y = element_text(family = "lex",
+                                 size = 14,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
+          plot.title = element_text(family = "lex", 
+                              size = 17, 
+                              hjust = 0.5,
+                              margin = margin(t = 0, r = 0, b = 0.3, l = 0, "cm")),
+    plot.subtitle = element_text(family = "lex",
+                                 size = 15,
+                                 hjust = 0.5,
+                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
+  scale_x_continuous(expand = c(0, NA))+
+  scale_y_continuous(limits = c(0.8,NA))
+
+plot_ir_deviants
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r fig.width = 20, fig.height = 10}
+
 init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of each other if they have the same columns
                       perimeter_ir_predictions, 
                       tdmc_ir_predictions, 
@@ -2037,262 +2422,6 @@ ggplot(data = init_rehy_df, # using the data frame created above
   theme(legend.position = "none") +
   facet_wrap(~trait, scales = "free")
 ```
-
-#graph with all the  models close to 1:1
-```{r}
-init23 <- init[init$trait != "thallus dry matter content"]
-init23$opacity <- ifelse(init23$trait == "height", 3,
-                      ifelse(init23$trait == "width", 3,
-                             ifelse(init23$trait == "perimeter", 0.1, 
-                                    ifelse(init23$trait == "surface area", 0.1, 
-                                                  ifelse(init23$trait == "thickness", 0.1, 
-                                                         ifelse(init23$trait == "volume", 0.1, NA ))))))
-
-label_df <- init23 %>% 
-  filter(x == max(x)) %>% 
-  mutate(label = stringr::str_to_title(trait),
-         nudge_y = case_when(
-           trait == "height" ~ 0.7,
-           trait == "width" ~ -0.3,
-           TRUE ~ 0
-         ))
-
-
-title <- "Two predictive trait models based on rehydrated values closely follow a 1:1 relationship"
-subtitle <- "The traits that follow this pattern are Height and Width"
-
-showtext_auto()
-trait_palette <- c("surface area" = "#ffbf00", 
-                   "perimeter" = "#be8333", 
-                  # "thallus dry matter content" = "#54662c", 
-                   "height" = "#009bb0", 
-                   "width" = "#124c54", 
-                   "thickness" = "#368000", 
-                   "volume" = "#b4450e")
-
-
- plot_ir_1s <- init23 %>% 
-  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
-  geom_line()+
-  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
-              intercept = 0,
-              color = "grey",
-              linetype = 2) + 
-  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
-  #                 ymin = conf.low,
-  #                 ymax = conf.high),
-  #             alpha = 0.2) +
-  geom_line(
-            linewidth = 0.5) + # plotting model predictions
-  labs(x = "Rehydrated Value", # renaming the axes
-       y = "Predicted Initial Value", 
-       title = title,
-       subtitle = subtitle) +
-  scale_color_manual(values = trait_palette)+
-  theme(legend.position = "none", 
-        plot.background = element_blank())+
-  geom_text(
-    data = init23 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
-    aes(label = label, alpha = opacity), 
-    hjust = 0, 
-    nudge_x = 0.1,
-    nudge_y = label_df$nudge_y,
-    size = 5, 
-    family = "lex", 
-    #alpha = opacity
-    #fontface = "light"
-  )+
-  coord_cartesian(xlim = c(0, 7.2), 
-                  clip = "off")+
-  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
-   theme(axis.title.x = element_text(family = "lex",
-                                 size = 14,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
-         axis.title.y = element_text(family = "lex",
-                                 size = 14,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
-          plot.title = element_text(family = "lex", 
-                              size = 17, 
-                              hjust = 0.5,
-                              margin = margin(t = 0, r = 1, b = 0.3, l = 0, "cm")),
-    plot.subtitle = element_text(family = "lex",
-                                 size = 15,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
-  scale_x_continuous(expand = c(0, NA))+
-  scale_y_continuous(limits = c(0.8,NA))
-
-```
-
-
-```{r fig.width = 10, fig.height = 10}
-showtext_auto()
-trait_palette <- c("surface area" = "#ffbf00", 
-                   "perimeter" = "#be8333", 
-                  # "thallus dry matter content" = "#54662c", 
-                   "height" = "#009bb0", 
-                   "width" = "#124c54", 
-                   "thickness" = "#368000", 
-                   "volume" = "#b4450e")
-init <- init_rehy_df 
-init2 <- as.data.frame(init) %>% 
-  mutate(trait = as.factor(trait))
-
-init2 <- init[init$trait != "thallus dry matter content"]
-init2$opacity <- ifelse(init2$trait == "height", 1,
-                      ifelse(init2$trait == "width", 1,
-                             ifelse(init2$trait == "perimeter", 3, 
-                                    ifelse(init2$trait == "surface area", 3, 
-                                                  ifelse(init2$trait == "thickness", 1, 
-                                                         ifelse(init2$trait == "volume", 3, NA ))))))
-
-title <- "Predictive models based on rehydrated measurements vary by trait"
-subtitle <- "The traits that deviate the most are Perimeter, Volume, and Surface Area"
-plot_ir_deviants <- init2 %>% 
-  ggplot(aes(x, predicted, color = trait, alpha = opacity))+
-  geom_line()+
-  geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
-              intercept = 0,
-              color = "grey",
-              linetype = 2) + 
-  # geom_ribbon(aes(fill = trait, # adding 95% CI (uncomment this if you want to see it)
-  #                 ymin = conf.low,
-  #                 ymax = conf.high),
-  #             alpha = 0.2) +
-  geom_line(
-            linewidth = 1.5) + # plotting model predictions
-  labs(x = "Rehydrated Value", # renaming the axes
-       y = "Predicted Initial Value", 
-       title = title,
-       subtitle = subtitle) +
-  scale_color_manual(values = trait_palette)+
-  theme(legend.position = "none", 
-        plot.background = element_blank())+
-  geom_text(
-    data = init2 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
-    aes(label = label), 
-    hjust = 0, 
-    nudge_x = 0.1, 
-    size = 5, 
-    family = "lex"
-    #fontface = "light"
-  )+
-  coord_cartesian(xlim = c(0, 7.2), 
-                  clip = "off")+
-  theme(plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm"))+
-   theme(axis.title.x = element_text(family = "lex",
-                                 size = 14,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")),
-         axis.title.y = element_text(family = "lex",
-                                 size = 14,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")), 
-          plot.title = element_text(family = "lex", 
-                              size = 17, 
-                              hjust = 0.5,
-                              margin = margin(t = 0, r = 0, b = 0.3, l = 0, "cm")),
-    plot.subtitle = element_text(family = "lex",
-                                 size = 15,
-                                 hjust = 0.5,
-                                 margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
-  scale_x_continuous(expand = c(0, NA))+
-  scale_y_continuous(limits = c(0.8,NA))
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #Visualize the linear model I & Rehydrate
 ```{r}
