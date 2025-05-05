@@ -1,14 +1,22 @@
 ---
 title: "Clean Multiple Regression Code"
 author: "Hayden Vega and An Bui"
-date: "2024-04-15"
+date: "2025-05-05"
 output:
   word_document: default
   html_document: default
   pdf_document: default
+description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
 ---
 
 ```{r}
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                                    Setup                                 ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#.........................Install Packages.........................
+
 install.packages("ggeffects")
 install.packages("DHARMa")
 install.packages("sjlabelled")
@@ -22,9 +30,7 @@ install.packages("parameters")
 options(oo)
 install.packages("effects")
 install.packages("MuMIn")
-```
-
-```{r include=FALSE}
+#.........................Load Libraries.........................
 library(janitor)
 library(tidyverse)
 library(ggeffects)
@@ -36,17 +42,24 @@ library(effects)
 library(MuMIn)
 library(waffle)
 library(showtext)
-```
-
-```{r}
+#.........................Load Fonts.........................
 font_add_google(name = "Marcellus", family = "marc")
 font_add_google(name = "Josefin Sans", family = "josefin")
 font_add_google(name = "Lexend", family = "lex")
-```
+#.........................Assigning a Standard ggplot Theme.........................
+# ggplot theme
+theme_set(theme_bw() +
+            theme(panel.grid = element_blank(), 
+                  plot.background = element_blank()))
 
+# abline color
+ref_line_col <- "grey"
 
-#Load in data for each trait with individual ID delimiter
-```{r}
+# model prediction color
+model_col <- "darkblue"
+
+#.........................Reading in Data for all Seven Traits and      Treatments.........................
+
 height_all <- read.csv("final_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
@@ -68,128 +81,411 @@ thickness_all <- read.csv("final_thickness.csv", header = TRUE, sep = ",") %>% s
 volume_all <- read.csv("final_volume.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-
-
 ```
 
-```{r visualization-objects}
-# ggplot theme
-theme_set(theme_bw() +
-            theme(panel.grid = element_blank(), 
-                  plot.background = element_blank()))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                      Making Mixed Effect Linear Models                   ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# abline color
-ref_line_col <- "grey"
-
-# model prediction color
-model_col <- "darkblue"
-```
-
-
-#Create multiple regression for each trait - initial & rehydrate WITH & WITHOUT species
+#    Models with Rehydrated Traits as Predictor Variables     ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
+     
 ```{r height-models, include=FALSE}
+#..........................Height Models.........................
 
 height_reg_ir <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
 summary(height_reg_ir)
 
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with height_i as our response variable, height_r as    .
+#  our predictor variable, and species as an interaction term. individual_id   .
+#  is included as a random effect.                                             .
+#                                                                              .
+#...............................................................................
+
 height_reg_ir_nospecies <- lmer(height_i ~ height_r + (1 | individual_id), data = height_all)
 summary(height_reg_ir_nospecies)
+
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with height_i as our response variable, height_r as    .
+#  our predictor variable, and individual_id as a random effect.               . 
+#                                                                              .
+#...............................................................................
 ```
 
 ```{r width-models}
-width_reg_ir <- lmer(width_i ~ width_r * species + (1 | individual_id), data = width_all)
+#..........................Width Models.........................
 
+width_reg_ir <- lmer(width_i ~ width_r * species + (1 | individual_id), data = width_all)
+summary(width_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with width_i as our response variable, width_r as our  .
+#  predictor, and species as an interaction term. individual_id is included    .
+#  as a random effect.                                                         .
+#                                                                              .
+#...............................................................................
 
 width_reg_ir_nospecies <- lmer(width_i ~ width_r + (1 | individual_id), data = width_all)
 summary(width_reg_ir_nospecies)
+
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with width_i as our response variable, width_r as our  .
+#  predictor, and individual_id as a random effect.
+#                                                                              .
+#                                                                              .
+#...............................................................................
 ```
 
 ```{r perimeter-models}
+#..........................Perimeter Models.........................
+
 perimeter_reg_ir <- lmer(per_i ~ per_r * species + (1 | individual_id), data = perimeter_all)
 summary(perimeter_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with per_i as our response variable, per_r as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
 
 perimeter_reg_ir_nospecies <- lmer(per_i ~ per_r + (1 | individual_id), data = perimeter_all)
 summary(perimeter_reg_ir_nospecies)
+
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with per_i as our response variable, per_r as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
 ```
 
 
 ```{r surf-models}
+#..........................Surface Area Models.........................
+
 surf_reg_ir <- lmer(surf_i ~ surf_r * species + (1 | individual_id), data = surf_all)
 summary(surf_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with surf_i as our response variable, surf_r as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
 
 surf_reg_ir_nospecies <- lmer(surf_i ~ surf_r + (1 | individual_id), data = surf_all)
 summary(surf_reg_ir_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with surf_i as our response variable, surf_r as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
 ```
 
 
 ```{r tdmc-models}
+#..........................Weight Models.........................
+
 tdmc_reg_ir <- lmer(weight_i ~ weight_r * species + (1 | individual_id), data = tdmc_all)
 summary(tdmc_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with weight_i as our response variable, weight_r as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
 
 tdmc_reg_ir_nospecies <- lmer(weight_i ~ weight_r + (1 | individual_id), data = tdmc_all)
 summary(tdmc_reg_ir_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with weight_i as our response variable, weight_r as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
 
 ```
 
 ```{r thick-models}
+#..........................Thickness Models.........................
+
 thick_reg_ir <- lmer(thick_i ~ thick_r * species + (1 | individual_id), data = thickness_all)
 summary(thick_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with thick_i as our response variable, thick_r as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
 
 thick_reg_ir_nospecies <- lmer(thick_i ~ thick_r + (1 | individual_id), data = thickness_all)
 summary(thick_reg_ir_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with thick_i as our response variable, thick_r as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
 ```
 
 
 ```{r volume-models}
+#..........................Volume Models.........................
+
 volume_reg_ir <- lmer(vol_i ~ vol_r * species + (1 | individual_id), data = volume_all)
 summary(volume_reg_ir)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with vol_i as our response variable, vol_r as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
 
 volume_reg_ir_nospecies <- lmer(vol_i ~ vol_r + (1 | individual_id), data = volume_all)
 summary(volume_reg_ir_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with vol_i as our response variable, vol_r as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+#     Models with Herbarium Traits as Predictor Variables     ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     
+```{r height-herbarium-models}
+#..........................Height Models.........................
+
+height_reg_ih <- lmer(height_i ~ height_h * species + (1 | individual_id), data = height_all)
+summary(height_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with height_i as our response variable, height_h as our.
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+
+height_reg_ih_nospecies <- lmer(height_i ~ height_h + (1 | individual_id), data = height_all)
+summary(height_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with height_i as our response variable, height_h as our.
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+```{r width-herbarium-models}
+#..........................Width Models.........................
+
+width_reg_ih <- lmer(width_i ~ width_h * species + (1 | individual_id), data = width_all)
+summary(width_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with width_i as our response variable, width_h as our.
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+
+width_reg_ih_nospecies <- lmer(width_i ~ width_h + (1 | individual_id), data = width_all)
+summary(width_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with width_i as our response variable, width_h as our  .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+```{r perimeter-herbarium-models}
+#..........................Perimeter Models.........................
+
+perimeter_reg_ih <- lmer(per_i ~ per_h * species + (1 | individual_id), data = perimeter_all)
+summary(perimeter_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with per_i as our response variable, per_h as our      .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+perimeter_reg_ih_nospecies <- lmer(per_i ~ per_h + (1 | individual_id), data = perimeter_all)
+summary(perimeter_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with per_i as our response variable, per_h as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
 ```
 
 
+```{r surf-herbarium-models}
+#..........................Surface Area Models.........................
 
-#Compare models using AIC;species & no species for Initial and Rehydrate
+surf_reg_ih <- lmer(surf_i ~ surf_h * species + (1 | individual_id), data = surf_all)
+summary(surf_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with surf_i as our response variable, surf_h as our    .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+
+surf_reg_ih_nospecies <- lmer(surf_i ~ surf_h + (1 | individual_id), data = surf_all)
+summary(surf_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with surf_i as our response variable, surf_h as our    .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+
+```{r tdmc-herbarium-models}
+#..........................Weight Models.........................
+
+tdmc_reg_ih <- lmer(weight_i ~ weight_h * species + (1 | individual_id), data = tdmc_all)
+summary(tdmc_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with weight_i as our response variable, weight_h as our.
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+tdmc_reg_ih_nospecies <- lmer(weight_i ~ weight_h + (1 | individual_id), data = tdmc_all)
+summary(tdmc_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with weight_i as our response variable, weight_h as our.
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+```{r thick-herbarium-models}
+#..........................Thickness Models.........................
+
+thick_reg_ih <- lmer(thick_i ~ thick_h * species + (1 | individual_id), data = thickness_all)
+summary(thick_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with thick_i as our response variable, thick_h as our  .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+thick_reg_ih_nospecies <- lmer(thick_i ~ thick_h + (1 | individual_id), data = thickness_all)
+summary(thick_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with thick_i as our response variable, thick_h as our  .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+
+```{r volume-herbarium-models}
+#..........................Volume Models.........................
+
+volume_reg_ih <- lmer(vol_i ~ vol_h * species + (1 | individual_id), data = volume_all)
+summary(volume_reg_ih)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with vol_i as our response variable, vol_h as our    .
+#  predictor, species as an interaction term, and individual_id as a random    .
+#  effect.                                                                     .
+#                                                                              .
+#...............................................................................
+volume_reg_ih_nospecies <- lmer(vol_i ~ vol_h + (1 | individual_id), data = volume_all)
+summary(volume_reg_ih_nospecies)
+#...............................................................................
+#                                                                              .
+#  A mixed effect model with vol_i as our response variable, vol_h as our      .
+#  predictor, and individual_id as a random effect.                            .
+#                                                                              .
+#...............................................................................
+```
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##                         Comparing Models using AIC                       ----
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+     # Comparisons for Models With Rehydrated Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r height-AIC}
+#..........................Comparisons for Height Models........................
+
 model.sel(height_reg_ir, height_reg_ir_nospecies)
 #nospecies is better
 ```
 
 ```{r width-AIC}
+#..........................Comparisons for Width Models.........................
+
 model.sel(width_reg_ir, width_reg_ir_nospecies)
 #nospecies is better
 ```
 
 ```{r perimeter-AIC}
+#..........................Comparisons for Perimeter Models......................
+
 model.sel(perimeter_reg_ir, perimeter_reg_ir_nospecies)
 #with species is better
 ```
 
 ```{r surf-AIC}
+#..........................Comparisons for Surface Area Models..................
 
 model.sel(surf_reg_ir, surf_reg_ir_nospecies)
 #species is better
 ```
 
 ```{r tdmc-AIC}
+#..........................Comparisons for Weight Models........................
+
 model.sel(tdmc_reg_ir, tdmc_reg_ir_nospecies)
 #species is better
 ```
 
 ```{r thick-AIC}
+#..........................Comparisons for Thickness Models.....................
+
 model.sel(thick_reg_ir, thick_reg_ir_nospecies)
-#nospecies is better, but doesn't really matter cause it's not a good predictor
+#nospecies is better, but rehydrated thickness it's not a good predictor overall
 ```
 
 ```{r volume-AIC}
+#..........................Comparisons for Volume Models........................
+
 model.sel(volume_reg_ir, volume_reg_ir_nospecies)
 #with species is better
 ```
 
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## Calculating R Squared Values for the Best Fitting Models From Each Trait and Treatment---
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#Calculating R^2 Values for the better models
+     # R Values for Models with Rehydrated Traits as Predictor Variables ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r r^2-height}
 MuMIn::r.squaredGLMM(height_reg_ir_nospecies)
 ```
@@ -863,67 +1159,7 @@ volume_ir_plot_species <- ggplot() +
 
 
 
-##Create multiple regression for each trait - HERBARIUM & INITIAL WITH & WITHOUT species
-```{r height-herbarium-models}
 
-height_reg_ih <- lmer(height_i ~ height_h * species + (1 | individual_id), data = height_all)
-summary(height_reg_ih)
-
-height_reg_ih_nospecies <- lmer(height_i ~ height_h + (1 | individual_id), data = height_all)
-summary(height_reg_ih_nospecies)
-```
-
-```{r width-herbarium-models}
-width_reg_ih <- lmer(width_i ~ width_h * species + (1 | individual_id), data = width_all)
-summary(width_reg_ih)
-
-width_reg_ih_nospecies <- lmer(width_i ~ width_h + (1 | individual_id), data = width_all)
-summary(width_reg_ih_nospecies)
-```
-
-```{r perimeter-herbarium-models}
-perimeter_reg_ih <- lmer(per_i ~ per_h * species + (1 | individual_id), data = perimeter_all)
-summary(perimeter_reg_ih)
-
-perimeter_reg_ih_nospecies <- lmer(per_i ~ per_h + (1 | individual_id), data = perimeter_all)
-summary(perimeter_reg_ih_nospecies)
-```
-
-
-```{r surf-herbarium-models}
-surf_reg_ih <- lmer(surf_i ~ surf_h * species + (1 | individual_id), data = surf_all)
-summary(surf_reg_ih)
-
-surf_reg_ih_nospecies <- lmer(surf_i ~ surf_h + (1 | individual_id), data = surf_all)
-summary(surf_reg_ih_nospecies)
-```
-
-
-```{r tdmc-herbarium-models}
-tdmc_reg_ih <- lmer(weight_i ~ weight_h * species + (1 | individual_id), data = tdmc_all)
-summary(tdmc_reg_ih)
-
-tdmc_reg_ih_nospecies <- lmer(weight_i ~ weight_h + (1 | individual_id), data = tdmc_all)
-summary(tdmc_reg_ih_nospecies)
-
-```
-
-```{r thick-herbarium-models}
-thick_reg_ih <- lmer(thick_i ~ thick_h * species + (1 | individual_id), data = thickness_all)
-summary(thick_reg_ih)
-
-thick_reg_ih_nospecies <- lmer(thick_i ~ thick_h + (1 | individual_id), data = thickness_all)
-summary(thick_reg_ih_nospecies)
-```
-
-
-```{r volume-herbarium-models}
-volume_reg_ih <- lmer(vol_i ~ vol_h * species + (1 | individual_id), data = volume_all)
-summary(volume_reg_ih)
-
-volume_reg_ih_nospecies <- lmer(vol_i ~ vol_h + (1 | individual_id), data = volume_all)
-summary(volume_reg_ih_nospecies)
-```
 
 
 
