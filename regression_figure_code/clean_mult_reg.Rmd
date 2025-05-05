@@ -44,6 +44,7 @@ library(MuMIn)
 library(waffle)
 library(showtext)
 library(lmerTest)
+library(here)
 #.........................Load Fonts.........................
 font_add_google(name = "Marcellus", family = "marc")
 font_add_google(name = "Josefin Sans", family = "josefin")
@@ -62,6 +63,16 @@ model_col <- "darkblue"
 
 #.........................Reading in Data for all Seven Traits and Treatments.........................
        #each model has an added column (specimen) that denotes subsample
+
+# using read_csv and `here` package to get rid of file paths
+height_all <- read_csv(here("data", "preliminary_data", "final_height.csv")) |> 
+  # separate specimen_id column by - to create new date, site, individual, and specimen columns
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) |> 
+  # create an individual id column
+  unite("individual_id", date:individual, remove = TRUE, sep = "-") 
 
 height_all <- read.csv("../data/preliminary_data/final_height.csv") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-") 
