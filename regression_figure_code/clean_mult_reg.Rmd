@@ -60,7 +60,7 @@ model_col <- "darkblue"
 
 #.........................Reading in Data for all Seven Traits and      Treatments.........................
 
-height_all <- read.csv("final_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+height_all <- read.csv("data/preliminary_data/final_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
 width_all <- read.csv("final_width.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
