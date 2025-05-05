@@ -1,8 +1,9 @@
 ---
-title: "Herbarium Figure Code"
+title: "Old Figure Code"
 author: "Hayden Vega"
 date: "2023-08-04"
 output: html_document
+description: This document contains old code for linear models and visualizations using data from the Functional Trait Project. 
 ---
 
 ```{r setup, include=FALSE}
