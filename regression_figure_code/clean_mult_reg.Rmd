@@ -30,6 +30,7 @@ install.packages("parameters")
 options(oo)
 install.packages("effects")
 install.packages("MuMIn")
+install.packages("lmerTest")
 #.........................Load Libraries.........................
 library(janitor)
 library(tidyverse)
@@ -42,6 +43,7 @@ library(effects)
 library(MuMIn)
 library(waffle)
 library(showtext)
+library(lmerTest)
 #.........................Load Fonts.........................
 font_add_google(name = "Marcellus", family = "marc")
 font_add_google(name = "Josefin Sans", family = "josefin")
@@ -58,27 +60,28 @@ ref_line_col <- "grey"
 # model prediction color
 model_col <- "darkblue"
 
-#.........................Reading in Data for all Seven Traits and      Treatments.........................
+#.........................Reading in Data for all Seven Traits and Treatments.........................
+       #each model has an added column (specimen) that denotes subsample
 
-height_all <- read.csv("data/preliminary_data/final_height.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+height_all <- read.csv("../data/preliminary_data/final_height.csv") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+  unite("individual_id", date:individual, remove = TRUE, sep = "-") 
+
+width_all <- read.csv("../data/preliminary_data/final_width.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-width_all <- read.csv("final_width.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+perimeter_all <- read.csv("../data/preliminary_data/final_perimeter.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-perimeter_all <- read.csv("final_perimeter.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+surf_all <- read.csv("../data/preliminary_data/final_surf.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-surf_all <- read.csv("final_surf.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+tdmc_all <- read.csv("../data/preliminary_data/final_tdmc.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-tdmc_all <- read.csv("final_tdmc.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+thickness_all <- read.csv("../data/preliminary_data/final_thickness.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-thickness_all <- read.csv("final_thickness.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
-  unite("individual_id", date:individual, remove = TRUE, sep = "-")
-
-volume_all <- read.csv("final_volume.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+volume_all <- read.csv("../data/preliminary_data/final_volume.csv", header = TRUE, sep = ",") %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
 ```
@@ -1137,8 +1140,8 @@ surf_ir_plot <- ggplot() +
             linewidth = 1) +
   
   # labels
-  labs(x = "Rehydrate perimeter (mm)",
-       y = "Initial perimeter (mm)") +
+  labs(x = "Rehydrate Surface Area (mm^2)",
+       y = "Initial Surface Area (mm^2)") +
   
   # controlling axes to make the plot look square
   # this makes it easier to see the difference between the model and the 1:1 line
@@ -1460,7 +1463,8 @@ R squared = 0.929")
 height_ih_plot
 ```
 
-#Visualize HERBARIUM models with species
+     #           Visualize HERBARIUM models with species           ~~~
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```{r width-herbarium - PLOT}
     
  #....Scatterplot of width_h(x) as a Predictor of width_i(y)....
@@ -1799,8 +1803,8 @@ surf_ih_plot <- ggplot() +
             linewidth = 1) +
   
   # labels
-  labs(x = "Herbarium perimeter (mm)",
-       y = "Initial perimeter (mm)") +
+  labs(x = "Herbarium Surface Area (mm^2)",
+       y = "Initial Surface Area (mm^2)") +
   
   # controlling axes to make the plot look square
   # this makes it easier to see the difference between the model and the 1:1 line
@@ -1845,8 +1849,8 @@ surf_ih_plot_species <- ggplot() +
                 group = species)) +
   
   # labels
-  labs(x = "Herbarium surface area (mm^2)",
-       y = "Initial surface area (mm^2)") +
+  labs(x = "Herbarium Surface Area (mm^2)",
+       y = "Initial Surface Area (mm^2)") +
   
   # theme
   theme(legend.position = "none",
@@ -2205,6 +2209,8 @@ trait_palette <- c("surface area" = "#ffbf00",
                                  margin = margin(t = 0, r = 0, b = 0.5, l = 0, "cm")))+
   scale_x_continuous(expand = c(0, NA))+
   scale_y_continuous(limits = c(0.8,NA))
+ 
+ plot_ir_1s
 
 ```
 
