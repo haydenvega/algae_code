@@ -3,8 +3,8 @@ title: "Clean Multiple Regression Code"
 author: "Hayden Vega and An Bui"
 date: "2025-05-05"
 output:
-  word_document: default
   html_document: default
+  word_document: default
   pdf_document: default
 description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
 ---
@@ -1887,7 +1887,7 @@ volume_ih_plot_species <- ggplot() +
 ```
 
 
-## c. Visualizing Summary graphs for rehydrate models
+## c. Visualizing summary graphs for rehydrate models
 This section includes visualizations that plot multiple trait models on a single graph
 
 ### Scatterplot faceted by trait
@@ -1944,7 +1944,7 @@ This scatterplot visualizes predictions for height, width, perimeter, surface ar
 
 #Using the dataframe with all our rehydrate trait predictions to assign an opacity
 #value to all traits. 3 signifies a close 1:1 relationship while 0.1 is a weak 1:1.
-
+init <- init_rehy_df 
 init23 <- init[init$trait != "thallus dry matter content"]
 init23$opacity <- ifelse(init23$trait == "height", 3,
                       ifelse(init23$trait == "width", 3,
