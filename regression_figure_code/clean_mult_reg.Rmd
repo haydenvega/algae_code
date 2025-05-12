@@ -118,7 +118,7 @@ This section includes code to fit linear mixed effect models to answer the quest
 
 ### Height
      
-```{r height-models, include=FALSE}
+```{r height-models}
 
 height_reg_ir <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
 summary(height_reg_ir)
