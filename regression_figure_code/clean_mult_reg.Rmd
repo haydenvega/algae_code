@@ -1,13 +1,13 @@
 ---
 title: "Clean Multiple Regression Code"
 author: "Hayden Vega and An Bui"
-date: "2025-05-05"
+date: "2025-05-12"
 output:
   html_document:
     toc: true
     toc_depth: 4
     toc_float: true
-description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
+description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 2025-05-12
 ---
 
 ```{r setup, include=FALSE}
