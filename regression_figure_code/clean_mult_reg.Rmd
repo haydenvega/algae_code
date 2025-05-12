@@ -118,7 +118,6 @@ This section includes code to fit linear mixed effect models to answer the quest
 
 ### Height
      
-     
 ```{r height-models, include=FALSE}
 
 height_reg_ir <- lmer(height_i ~ height_r * species + (1 | individual_id), data = height_all)
@@ -142,7 +141,9 @@ width_reg_ir_nospecies <- lmer(width_i ~ width_r + (1 | individual_id), data = w
 summary(width_reg_ir_nospecies)
 
 ```
- ### Perimeter
+
+### Perimeter
+
 ```{r perimeter-models}
 
 perimeter_reg_ir <- lmer(per_i ~ per_r * species + (1 | individual_id), data = perimeter_all)
@@ -152,7 +153,9 @@ perimeter_reg_ir_nospecies <- lmer(per_i ~ per_r + (1 | individual_id), data = p
 summary(perimeter_reg_ir_nospecies)
 
 ```
+
 ### Surface Area
+
 ```{r surf-models}
 
 surf_reg_ir <- lmer(surf_i ~ surf_r * species + (1 | individual_id), data = surf_all)
@@ -161,7 +164,9 @@ summary(surf_reg_ir)
 surf_reg_ir_nospecies <- lmer(surf_i ~ surf_r + (1 | individual_id), data = surf_all)
 summary(surf_reg_ir_nospecies)
 ```
+
 ### Weight
+
 ```{r tdmc-models}
 
 tdmc_reg_ir <- lmer(weight_i ~ weight_r * species + (1 | individual_id), data = tdmc_all)
@@ -171,7 +176,9 @@ tdmc_reg_ir_nospecies <- lmer(weight_i ~ weight_r + (1 | individual_id), data = 
 summary(tdmc_reg_ir_nospecies)
 
 ```
+
 ### Thickness
+
 ```{r thick-models}
 
 thick_reg_ir <- lmer(thick_i ~ thick_r * species + (1 | individual_id), data = thickness_all)
@@ -182,6 +189,7 @@ summary(thick_reg_ir_nospecies)
 ```
 
 ### Volume
+
 ```{r volume-models}
 
 volume_reg_ir <- lmer(vol_i ~ vol_r * species + (1 | individual_id), data = volume_all)
@@ -195,7 +203,8 @@ summary(volume_reg_ir_nospecies)
 
 This section includes code to fit linear mixed effect models to answer the question: how well do **herbarium** trait values predict initial trait values? Each trait is predicted by two models: initial values as a function of herbarium values **with** a species interaction and intiial values as a function of herbarium values **without** a species interaction - both models have individual_id included as a random effect. We view model summaries using `summary()`.
 
-### Height    
+### Height
+
 ```{r height-herbarium-models}
 
 height_reg_ih <- lmer(height_i ~ height_h * species + (1 | individual_id), data = height_all)
@@ -206,7 +215,9 @@ height_reg_ih_nospecies <- lmer(height_i ~ height_h + (1 | individual_id), data 
 summary(height_reg_ih_nospecies)
 #This model describes height_i as a function of height_h with a random effect of individual_id and without a species interaction term
 ```
+
 ### Width
+
 ```{r width-herbarium-models}
 
 width_reg_ih <- lmer(width_i ~ width_h * species + (1 | individual_id), data = width_all)
@@ -215,7 +226,9 @@ summary(width_reg_ih)
 width_reg_ih_nospecies <- lmer(width_i ~ width_h + (1 | individual_id), data = width_all)
 summary(width_reg_ih_nospecies)
 ```
+
 ### Perimeter
+
 ```{r perimeter-herbarium-models}
 
 perimeter_reg_ih <- lmer(per_i ~ per_h * species + (1 | individual_id), data = perimeter_all)
@@ -224,7 +237,9 @@ summary(perimeter_reg_ih)
 perimeter_reg_ih_nospecies <- lmer(per_i ~ per_h + (1 | individual_id), data = perimeter_all)
 summary(perimeter_reg_ih_nospecies)
 ```
+
 ### Surface Area
+
 ```{r surf-herbarium-models}
 
 surf_reg_ih <- lmer(surf_i ~ surf_h * species + (1 | individual_id), data = surf_all)
@@ -233,7 +248,9 @@ summary(surf_reg_ih)
 surf_reg_ih_nospecies <- lmer(surf_i ~ surf_h + (1 | individual_id), data = surf_all)
 summary(surf_reg_ih_nospecies)
 ```
+
 ### Weight
+
 ```{r tdmc-herbarium-models}
 
 tdmc_reg_ih <- lmer(weight_i ~ weight_h * species + (1 | individual_id), data = tdmc_all)
@@ -242,7 +259,9 @@ summary(tdmc_reg_ih)
 tdmc_reg_ih_nospecies <- lmer(weight_i ~ weight_h + (1 | individual_id), data = tdmc_all)
 summary(tdmc_reg_ih_nospecies)
 ```
+
 ### Thickness
+
 ```{r thick-herbarium-models}
 
 thick_reg_ih <- lmer(thick_i ~ thick_h * species + (1 | individual_id), data = thickness_all)
@@ -251,7 +270,9 @@ summary(thick_reg_ih)
 thick_reg_ih_nospecies <- lmer(thick_i ~ thick_h + (1 | individual_id), data = thickness_all)
 summary(thick_reg_ih_nospecies)
 ```
+
 ### Volume
+
 ```{r volume-herbarium-models}
 
 volume_reg_ih <- lmer(vol_i ~ vol_h * species + (1 | individual_id), data = volume_all)
@@ -268,48 +289,61 @@ This section includes code comparing the AIC values for models with a species in
 ## a. Comparisons for models with rehydrated traits as predictors
 
 ### Height
+
 ```{r height-AIC}
 #..........................Comparisons for Height Models........................
 
 model.sel(height_reg_ir, height_reg_ir_nospecies)
 #nospecies is better
 ```
+
 ### Width
+
 ```{r width-AIC}
 #..........................Comparisons for Width Models.........................
 
 model.sel(width_reg_ir, width_reg_ir_nospecies)
 #nospecies is better
 ```
+
 ### Perimeter
+
 ```{r perimeter-AIC}
 #..........................Comparisons for Perimeter Models......................
 
 model.sel(perimeter_reg_ir, perimeter_reg_ir_nospecies)
 #with species is better
 ```
+
 ### Surface Area
+
 ```{r surf-AIC}
 #..........................Comparisons for Surface Area Models..................
 
 model.sel(surf_reg_ir, surf_reg_ir_nospecies)
 #species is better
 ```
+
 ### Weight
+
 ```{r tdmc-AIC}
 #..........................Comparisons for Weight Models........................
 
 model.sel(tdmc_reg_ir, tdmc_reg_ir_nospecies)
 #species is better
 ```
+
 ### Thickness
+
 ```{r thick-AIC}
 #..........................Comparisons for Thickness Models.....................
 
 model.sel(thick_reg_ir, thick_reg_ir_nospecies)
 #nospecies is better, but rehydrated thickness it's not a good predictor overall
 ```
+
 ### Volume
+
 ```{r volume-AIC}
 #..........................Comparisons for Volume Models........................
 
@@ -320,48 +354,61 @@ model.sel(volume_reg_ir, volume_reg_ir_nospecies)
 ## b. Comparisons for models with Herbarium traits as a predictor variable
 
 ### Height
+
 ```{r height-herbarium-AIC}
 #..........................Comparisons for Height Models........................
 
 model.sel(height_reg_ih, height_reg_ih_nospecies)
 #nospecies is better
 ```
+
 ### Width
+
 ```{r width-herbarium-AIC}
 #..........................Comparisons for Width Models........................
 
 model.sel(width_reg_ih, width_reg_ih_nospecies)
 #species is better
 ```
+
 ### Perimeter
+
 ```{r perimeter-herbarium-AIC}
 #.......................Comparisons for Perimeter Models........................
 
 model.sel(perimeter_reg_ih, perimeter_reg_ih_nospecies)
 #with species is better
 ```
+
 ### Surface Area
+
 ```{r surf-herbarium-AIC}
 #....................Comparisons for Surface Area Models........................
 
 model.sel(surf_reg_ih, surf_reg_ih_nospecies)
 #species is better
 ```
+
 ### Weight
+
 ```{r tdmc-herbarium-AIC}
 #..........................Comparisons for Weight Models........................
 
 model.sel(tdmc_reg_ih, tdmc_reg_ih_nospecies)
 #species is better
 ```
+
 ### Thickness
+
 ```{r thick-herbarium-AIC}
 #.......................Comparisons for Thickness Models........................
 
 model.sel(thick_reg_ih, thick_reg_ih_nospecies)
 #species is better, but doesn't really matter cause it's not a good predictor
 ```
+
 ### Volume
+
 ```{r volume-herbarium-AIC}
 #..........................Comparisons for Volume Models........................
 
@@ -376,45 +423,58 @@ This section includes code that calculates the marginal and conditional R square
 ## a. Calculating R squared values for models with rehydrated traits as a predictor
 
 ### Height
+
 ```{r r^2-height}
 #..................R^2 for Height Model without species interaction term........
 
 MuMIn::r.squaredGLMM(height_reg_ir_nospecies)
 
 ```
+
 ### Width
+
 ```{r r^2-width}
 #..................R^2 for Width Model without species interaction term........
 
 MuMIn::r.squaredGLMM(width_reg_ir_nospecies)
 
 ```
+
 ### Perimeter
+
 ```{r r2-perimeter}
 #...............R^2 for Perimeter Model with species interaction term........
 
 MuMIn::r.squaredGLMM(perimeter_reg_ir)
 ```
+
 ### Surface Area
+
 ```{r r2-surf}
 #............R^2 for Surface Area Model with species interaction term........
 
 MuMIn::r.squaredGLMM(surf_reg_ir)
 
 ```
+
 ### Weight
+
 ```{r r2-tdmc}
 #..................R^2 for Weight Model with species interaction term........
 
 MuMIn::r.squaredGLMM(tdmc_reg_ir)
 ```
+
 ### Thickness
+
 ```{r r2-thick}
 #...............R^2 for Thickness Model without species interaction term........
 
 MuMIn::r.squaredGLMM(thick_reg_ir_nospecies)
 ```
+
 ### Volume
+
 ```{r r2-volume}
 #..................R^2 for Volume Model with species interaction term........
 
@@ -423,52 +483,63 @@ MuMIn::r.squaredGLMM(volume_reg_ir)
 
 ## b. Calculating R squared values for models with Herbarium traits as predictor variables
 
-### Height     
+### Height  
+
 ```{r r^2-herbarium-height}
 #..................R^2 for Height Model without species interaction term........
 
 MuMIn::r.squaredGLMM(height_reg_ih_nospecies)
 ```
+
 ### Width
+
 ```{r r^2-herbarium-width}
 #..................R^2 for Width Model with species interaction term............
 
 MuMIn::r.squaredGLMM(width_reg_ih)
 
 ```
+
 ### Perimeter
+
 ```{r r2-herbarium-perimeter}
 #...............R^2 for Perimeter Model with species interaction term........
 
 MuMIn::r.squaredGLMM(perimeter_reg_ih)
 ```
+
 ### Surface Area
+
 ```{r r2-herbarium-surf}
 #............R^2 for Surface Area Model with species interaction term........
 
 MuMIn::r.squaredGLMM(surf_reg_ih)
 
 ```
+
 ### Weight
+
 ```{r r2-herbarium-tdmc}
 #..................R^2 for Weight Model with species interaction term........
 
 MuMIn::r.squaredGLMM(tdmc_reg_ih)
 ```
+
 ### Thickness
+
 ```{r r2-herbarium-thick}
 #..................R^2 for Thickness Model with species interaction term........
 
 MuMIn::r.squaredGLMM(thick_reg_ih)
 ```
+
 ### Volume
+
 ```{r r2-herbarium-volume}
 #..................R^2 for Volume Model with species interaction term...........
 
 MuMIn::r.squaredGLMM(volume_reg_ih)
 ```
-
-     
 
 # 5. Saving models as predictions for later plotting
 
@@ -477,6 +548,7 @@ This section includes code to save the model predictions of the best fitting mod
 ## a. Saving predictions for models with rehydrated traits as predictor variables
 
 ### Height
+
 ```{r rehydrate_height_predictions}
      #........Predictions for the Height Model Without Species........
 
@@ -486,7 +558,9 @@ height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:
 
 height_ir_predictions
 ```
+
 ### Width
+
 ```{r rehydrate_width_predictions}
      #........Predictions for the Width Model Without Species........
 
@@ -497,7 +571,9 @@ width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]
 width_ir_predictions
 
 ```
+
 ### Perimeter
+
 ```{r rehydrate_perimeter_predictions}
      #........Predictions for the Height Model With Species........
 perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") |> 
@@ -510,7 +586,9 @@ perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r
 # look at the data frame
 perimeter_ir_predictions
 ```
+
 ### Surface Area
+
 ```{r rehydrate_surf_predictions}
      #........Predictions for the Height Model With Species........
 
@@ -524,7 +602,9 @@ surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "speci
 # look at the data frame
 surf_ir_predictions
 ```
+
 ### Weight
+
 ```{r rehydrate_tdmc_predictions, fig.width = 20, fig.height = 10}
      #........Predictions for the Weight Model With Species........
 
@@ -540,7 +620,9 @@ tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "spe
 tdmc_ir_predictions
 
 ```
+
 ### Thickness
+
 ```{r rehydrate_thick - prediction}
      #........Predictions for the Thickness Model Without Species........
 
@@ -551,7 +633,9 @@ thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]"
 thick_ir_predictions
 
 ```
+
 ### Volume
+
 ```{r rehydrate_volume - prediction}
      #........Predictions for the Volume Model With Species........
 
@@ -570,6 +654,7 @@ volume_ir_predictions
 ## b. Saving predictions for models with herbarium traits as predictor variables
  
 ### Height    
+
 ```{r height-herbarium_predictions}
 
      #........Predictions for the Height Model Without Species........
@@ -577,7 +662,9 @@ height_ih_predictions <- ggpredict(height_reg_ih_nospecies, terms = "height_h[0:
 
 height_ih_predictions
 ```
+
 ### Width
+
 ```{r width-herbarium_predictions}
     
  #........Predictions for the Width Model Without Species........
@@ -593,7 +680,9 @@ width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "sp
 
 
 ```
+
 ### Perimeter
+
 ```{r perimeter-herbarium_predictions}
      
 #........Predictions for the Perimeter Model With Species........
@@ -606,7 +695,9 @@ perimeter_ih_predictions_species <- ggpredict(perimeter_reg_ih, terms = c("per_h
 # look at the data frame
 perimeter_ih_predictions_species
 ```
+
 ### Surface Area
+
 ```{r surf-herbarium_predictions}
    
  #........Predictions for the Surface Area Model With Species........
@@ -619,7 +710,9 @@ surf_ih_predictions_species <- ggpredict(surf_reg_ih, terms = c("surf_h", "speci
 # look at the data frame
 surf_ih_predictions_species
 ```
+
 ### Weight
+
 ```{r tdmc-herbarium_predictions}
 
      #........Predictions for the Weight Model With Species........
@@ -635,7 +728,9 @@ tdmc_ih_predictions
 tdmc_ih_predictions_species
 
 ```
+
 ### Thickness
+
 ```{r thick-herbarium - prediction}
      #........Predictions for the Thickness Model Without Species........
 
@@ -650,7 +745,9 @@ thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "sp
   rename(species = group)
 
 ```
+
 ### Volume
+
 ```{r volume-herbarium - prediction}
 
      #........Predictions for the Volume Model With Species........
@@ -667,11 +764,13 @@ volume_ih_predictions_species
 ```
      
 # 6. Visualizing Models
+
 This section includes code for scatterplots of model predictions using ggplot. Every model has one scatterplot with initial trait values on the Y axis and treatment (rehydrated/herbarium) trait values on the X axis. Models that incorporate a species interaction have an additional scatterplot faceted by species. 
 
 ## a. Visualizing models with Rehydrated traits on the X axis
 
 ### Height
+
 ```{r rehydrate_height - PLOT}
 
      #.....Scatterplot of height_r(x) as Predictor of height_i(y).....
@@ -726,7 +825,9 @@ R squared = 0.996")
 
 height_ir_plot
 ```
+
 ### Width
+
 ```{r rehydrate_width - PLOT}
 
      #.....Scatterplot of width_r(x) as Predictor of width_i(y).....
@@ -781,7 +882,9 @@ R squared = 0.996")
 width_ir_plot
 
 ```
+
 ### Thickness
+
 ```{r rehydrate_thick - PLOT, fig.width = 20, fig.height = 10}
      
      #.....Scatterplot of thickness_r(x) as Predictor of thickness_i(y).....
@@ -837,6 +940,7 @@ thick_ir_plot
 ```
 
 ### Perimeter
+
 ```{r rehydrate_perimeter - PLOT}
      #.....Scatterplot of perimeter_r(x) as Predictor of perimeter_i(y).....
 perimeter_ir_plot <- ggplot() +
@@ -938,7 +1042,9 @@ perimeter_ir_plot_species <- ggplot() +
 
   perimeter_ir_plot_species
 ```
+
 ### Surface Area
+
 ```{r rehydrate_surf - PLOT (species)}
 
      #.....Scatterplot of surf_r(x) as Predictor of surf_i(y).....
@@ -1038,7 +1144,9 @@ surf_ir_plot_species <- ggplot() +
 
   surf_ir_plot_species
 ```
+
 ### Weight
+
 ```{r rehydrate_tdmc - plot - species}
     
  #.....Scatterplot of weight_r(x) as Predictor of weight_i(y).....
@@ -1140,7 +1248,9 @@ tdmc_ir_plot_species <- ggplot() +
 
  tdmc_ir_plot_species
 ```
+
 ### Volume
+
 ```{r rehydrate-volume - PLOT}
      
 #.....Scatterplot of vol_r(x) as Predictor of vol_i(y).....
@@ -1247,6 +1357,7 @@ volume_ir_plot_species <- ggplot() +
 ## b. Visualizing models with herbarium traits on the X axis
 
 ### Height 
+
 ```{r height-herbarium - PLOT}
 
      #....Scatterplot of height_h(x) as a Predictor of height_i(y)....
@@ -1301,6 +1412,7 @@ height_ih_plot
 ```
 
 ### Width
+
 ```{r width-herbarium - PLOT}
     
  #....Scatterplot of width_h(x) as a Predictor of width_i(y)....
@@ -1400,7 +1512,9 @@ width_ih_plot_species <- ggplot() +
   width_ih_plot_species
 
 ```
+
 ### Thickness
+
 ```{r thick-herbarium - PLOT}
 
      #....Scatterplot of thick_h(x) as a Predictor of thick_i(y)....
@@ -1501,7 +1615,9 @@ thick_ih_plot_species <- ggplot() +
   thick_ih_plot_species
 
 ```
+
 ### Perimeter
+
 ```{r perimeter-herbarium - PLOT}
 
      #....Scatterplot of per_h(x) as a Predictor of per_i(y)....
@@ -1601,7 +1717,9 @@ perimeter_ih_plot_species <- ggplot() +
 
   perimeter_ih_plot_species
 ```
+
 ### Surface Area
+
 ```{r surf-herbarium - PLOT (species)}
 
      #....Scatterplot of surf_h(x) as a Predictor of surf_i(y)....
@@ -1700,7 +1818,9 @@ surf_ih_plot_species <- ggplot() +
 
   surf_ih_plot_species
 ```
+
 ### Weight
+
 ```{r tdmc-herbarium - plot - species}
 
      #....Scatterplot of weight_h(x) as a Predictor of weight_i(y)....
@@ -1800,7 +1920,9 @@ tdmc_ih_plot_species <- ggplot() +
 
  tdmc_ih_plot_species
 ```
+
 ### Volume
+
 ```{r volume-herbarium - PLOT}
 
      #....Scatterplot of vol_h(x) as a Predictor of vol_i(y)....
@@ -1902,13 +2024,13 @@ volume_ih_plot_species <- ggplot() +
 
 ```
 
-
 ## c. Visualizing summary graphs for rehydrate models
 This section includes visualizations that plot multiple trait models on a single graph
 
 ### Scatterplot faceted by trait
 
 This scatterplot visualizes predictions for height, width, perimeter, weight, surface area, thickness, and volume as a function of inital trait values, faceted by trait. 
+
 ```{r fig.width = 20, fig.height = 10}
 # surf_ir_predictions, perimeter_ir_predictions, tdmc_ir_predictions, height_ir_predictions, width_ir_predictions, thick_ir_predictions, volume_ir_predictions
 
@@ -2057,6 +2179,7 @@ trait_palette <- c("surface area" = "#ffbf00",
 ### Highlighting relationships that deviate from 1:1
 
 This includes code for a scatterplot of height, width, perimeter, surface area, thickness, and volume on the same graph. Models that deviate from a 1:1 relationship are highlighted.
+
 ```{r fig.width = 10, fig.height = 10}
 
 #.........................assigning opacity values (manually).........................
