@@ -4,30 +4,16 @@ author: "Hayden Vega and An Bui"
 date: "2025-05-05"
 output:
   html_document: default
-  word_document: default
-  pdf_document: default
 description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
 
 # 1. Set up
 
 ```{r}
-#.........................Install Packages.........................
-
-# install.packages("ggeffects")
-# install.packages("DHARMa")
-# install.packages("sjlabelled")
-# install.packages("lme4")
-# install.packages("lme4", type = "source")
-# oo <- options(repos = "https://cran.r-project.org/")
-# install.packages("Matrix")
-# install.packages("lme4")
-# install.packages("glmmTMG")
-# install.packages("parameters")
-# options(oo)
-# install.packages("effects")
-# install.packages("MuMIn")
-# install.packages("lmerTest")
 #.........................Load Libraries.........................
 library(janitor)
 library(tidyverse)
@@ -42,11 +28,14 @@ library(waffle)
 library(showtext)
 library(lmerTest)
 library(here)
+
 #.........................Load Fonts.........................
 font_add_google(name = "Marcellus", family = "marc")
 font_add_google(name = "Josefin Sans", family = "josefin")
 font_add_google(name = "Lexend", family = "lex")
-#.........................Assigning a Standard ggplot Theme.........................
+
+#...............Assigning a Standard ggplot Theme............
+
 # ggplot theme
 theme_set(theme_bw() +
             theme(panel.grid = element_blank(), 
@@ -58,7 +47,7 @@ ref_line_col <- "grey"
 # model prediction color
 model_col <- "darkblue"
 
-#.........................Reading in Data for all Seven Traits and Treatments.........................
+#.......Reading in Data for all Seven Traits and Treatments.........
  
 # Each data frame is read in, then specimen_id column is separated to create new 
 # columns, then we create an individual ID column from date, site, and individual.
@@ -74,22 +63,45 @@ height_all <- read_csv(here("data", "preliminary_data", "final_height.csv")) |>
   unite("individual_id", date:individual, remove = TRUE, sep = "-") 
 
 
-width_all <- read_csv(here("data", "preliminary_data", "final_width.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+width_all <- read_csv(here("data", "preliminary_data", "final_width.csv")) |> 
+  separate_wider_delim(specimen_id,
+                       delim = "-",                                                                     names = c("date", "site", "individual", "specimen"),
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-perimeter_all <- read_csv(here("data", "preliminary_data", "final_perimeter.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+perimeter_all <- read_csv(here("data", "preliminary_data", "final_perimeter.csv")) |> 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"),
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-surf_all <- read_csv(here("data", "preliminary_data", "final_surf.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+surf_all <- read_csv(here("data", "preliminary_data", "final_surf.csv")) |> 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-tdmc_all <- read_csv(here("data", "preliminary_data", "final_tdmc.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+tdmc_all <- read_csv(here("data", "preliminary_data", "final_tdmc.csv")) |> 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-thickness_all <- read_csv(here("data", "preliminary_data", "final_thickness.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+thickness_all <- read_csv(here("data", "preliminary_data", "final_thickness.csv")) |> 
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"),
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
-volume_all <- read_csv(here("data", "preliminary_data", "final_volume.csv")) %>% separate_wider_delim(specimen_id, delim = "-", names = c("date", "site", "individual", "specimen"), cols_remove=FALSE) %>% 
+volume_all <- read_csv(here("data", "preliminary_data", "final_volume.csv")) |>
+  separate_wider_delim(specimen_id, 
+                       delim = "-", 
+                       names = c("date", "site", "individual", "specimen"), 
+                       cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
 ```
@@ -464,7 +476,7 @@ This section includes code to save the model predictions of the best fitting mod
 ```{r rehydrate_height_predictions}
      #........Predictions for the Height Model Without Species........
 
-height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") %>% 
+height_ir_predictions <- ggpredict(height_reg_ir_nospecies, terms = "height_r[0:45]") |> 
   #saving predictions for height_r values from 0-45 
   mutate(trait = "height") #adding a column to label the type of trait values
 
@@ -474,7 +486,7 @@ height_ir_predictions
 ```{r rehydrate_width_predictions}
      #........Predictions for the Width Model Without Species........
 
-width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") %>% #max width = 24
+width_ir_predictions <- ggpredict(width_reg_ir_nospecies, terms = "width_r[0:30]") |> #max width = 24
   mutate(trait = "width") 
 
 # look at the data frame
@@ -484,12 +496,12 @@ width_ir_predictions
 ### Perimeter
 ```{r rehydrate_perimeter_predictions}
      #........Predictions for the Height Model With Species........
-perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") %>% 
+perimeter_ir_predictions <- ggpredict(perimeter_reg_ir, terms = "per_r[0:375]") |> 
   mutate(trait = "perimeter")
 
      #...........Incorporating Species as a Prediction Term...........
-perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) %>% 
-  as_tibble() %>% #converting to a tibble
+perimeter_ir_predictions_species <- ggpredict(perimeter_reg_ir, terms = c("per_r", "species")) |> 
+  as_tibble() |> #converting to a tibble
   rename(species = group)
 # look at the data frame
 perimeter_ir_predictions
@@ -498,12 +510,12 @@ perimeter_ir_predictions
 ```{r rehydrate_surf_predictions}
      #........Predictions for the Height Model With Species........
 
-surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") %>% 
+surf_ir_predictions <- ggpredict(surf_reg_ir, terms = "surf_r[0:430]") |> 
   mutate(trait = "surface area")
 
      #...........Incorporating Species as a Prediction Term...........
-surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "species")) %>% 
-  as_tibble() %>% 
+surf_ir_predictions_species <- ggpredict(surf_reg_ir, terms = c("surf_r", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 surf_ir_predictions
@@ -512,13 +524,13 @@ surf_ir_predictions
 ```{r rehydrate_tdmc_predictions, fig.width = 20, fig.height = 10}
      #........Predictions for the Weight Model With Species........
 
-tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") %>% 
-  as_tibble() %>% 
+tdmc_ir_predictions <- ggpredict(tdmc_reg_ir, terms = "weight_r[0:29050]") |> 
+  as_tibble() |> 
   mutate(trait = "thallus dry matter content")
 
      #...........Incorporating Species as a Prediction Term...........
-tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) %>% 
-  as_tibble() %>% 
+tdmc_ir_predictions_species <- ggpredict(tdmc_reg_ir, terms = c("weight_r", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 tdmc_ir_predictions
@@ -528,7 +540,7 @@ tdmc_ir_predictions
 ```{r rehydrate_thick - prediction}
      #........Predictions for the Thickness Model Without Species........
 
-thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]")  %>% 
+thick_ir_predictions <- ggpredict(thick_reg_ir_nospecies, terms = "thick_r[0:2]")  |> 
   mutate(trait = "thickness")
 
 # look at the data frame
@@ -539,12 +551,12 @@ thick_ir_predictions
 ```{r rehydrate_volume - prediction}
      #........Predictions for the Volume Model With Species........
 
-volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") %>% 
+volume_ir_predictions <- ggpredict(volume_reg_ir, terms = "vol_r[0:30]") |> 
   mutate(trait = "volume")
 
      #...........Incorporating Species as a Prediction Term...........
-volume_ir_predictions_species <- ggpredict(volume_reg_ir, terms = c("vol_r", "species")) %>% 
-  as_tibble() %>% 
+volume_ir_predictions_species <- ggpredict(volume_reg_ir, terms = c("vol_r", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 volume_ir_predictions
@@ -571,8 +583,8 @@ width_ih_predictions <- ggpredict(width_reg_ih_nospecies, terms = "width_h[0:30]
 width_ih_predictions
 
      #...........Incorporating Species as a Prediction Term...........
-width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "species")) %>% 
-  as_tibble() %>% 
+width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 
 
@@ -584,8 +596,8 @@ width_ih_predictions_species <- ggpredict(width_reg_ih, terms = c("width_h", "sp
 perimeter_ih_predictions <- ggpredict(perimeter_reg_ih, terms = "per_h[0:375]") 
 
      #...........Incorporating Species as a Prediction Term...........
-perimeter_ih_predictions_species <- ggpredict(perimeter_reg_ih, terms = c("per_h", "species")) %>% 
-  as_tibble() %>% 
+perimeter_ih_predictions_species <- ggpredict(perimeter_reg_ih, terms = c("per_h", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 perimeter_ih_predictions_species
@@ -597,8 +609,8 @@ perimeter_ih_predictions_species
 surf_ih_predictions <- ggpredict(surf_reg_ih, terms = "surf_h[0:430]") 
 
      #...........Incorporating Species as a Prediction Term...........
-surf_ih_predictions_species <- ggpredict(surf_reg_ih, terms = c("surf_h", "species")) %>% 
-  as_tibble() %>% 
+surf_ih_predictions_species <- ggpredict(surf_reg_ih, terms = c("surf_h", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 surf_ih_predictions_species
@@ -611,8 +623,8 @@ surf_ih_predictions_species
 tdmc_ih_predictions <- ggpredict(tdmc_reg_ih, terms = "weight_h[0:29050]") 
 
      #...........Incorporating Species as a Prediction Term...........
-tdmc_ih_predictions_species <- ggpredict(tdmc_reg_ih, terms = c("weight_h", "species")) %>% 
-  as_tibble() %>% 
+tdmc_ih_predictions_species <- ggpredict(tdmc_reg_ih, terms = c("weight_h", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 tdmc_ih_predictions
@@ -629,8 +641,8 @@ thick_ih_predictions <- ggpredict(thick_reg_ih_nospecies, terms = "thick_h[0:2]"
 thick_ih_predictions
 
      #...........Incorporating Species as a Prediction Term...........
-thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species"))  %>% 
-  as_tibble() %>% 
+thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "species"))  |> 
+  as_tibble() |> 
   rename(species = group)
 
 ```
@@ -641,8 +653,8 @@ thick_ih_predictions_species <- ggpredict(thick_reg_ih, terms = c("thick_h", "sp
 volume_ih_predictions <- ggpredict(volume_reg_ih, terms = "vol_h[0:30]") 
 
      #...........Incorporating Species as a Prediction Term...........
-volume_ih_predictions_species <- ggpredict(volume_reg_ih, terms = c("vol_h", "species")) %>% 
-  as_tibble() %>% 
+volume_ih_predictions_species <- ggpredict(volume_reg_ih, terms = c("vol_h", "species")) |> 
+  as_tibble() |> 
   rename(species = group)
 # look at the data frame
 volume_ih_predictions
@@ -1907,7 +1919,7 @@ init_rehy_df <- rbind(surf_ir_predictions, # rbind stacks data frames on top of 
                       height_ir_predictions, 
                       width_ir_predictions, 
                       thick_ir_predictions, 
-                      volume_ir_predictions) %>% 
+                      volume_ir_predictions) |> 
   drop_na() # not sure why there are NA rows at the end of the data frame, but they come from one of the prediction data frames
 
 
@@ -1953,8 +1965,8 @@ init23$opacity <- ifelse(init23$trait == "height", 3,
                                                   ifelse(init23$trait == "thickness", 0.1, 
                                                          ifelse(init23$trait == "volume", 0.1, NA ))))))
      #........manually offsetting height and width line labels........
-label_df <- init23 %>% 
-  filter(x == max(x)) %>% 
+label_df <- init23 |> 
+  filter(x == max(x)) |> 
   mutate(label = stringr::str_to_title(trait),
          nudge_y = case_when(
            trait == "height" ~ 0.7,
@@ -1979,7 +1991,7 @@ trait_palette <- c("surface area" = "#ffbf00",
      #........scatterplot with all rehydrate trait predictions........
      #......rehydrated trait value (x) & initial trait values (y).....
      #..excludes tdmc, and highlights traits with 1:1 relationships...
- plot_ir_1s <- init23 %>% 
+ plot_ir_1s <- init23 |> 
   ggplot(aes(x, predicted, color = trait, alpha = opacity))+
   geom_line()+
   geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
@@ -2001,7 +2013,7 @@ trait_palette <- c("surface area" = "#ffbf00",
         plot.background = element_blank())+
  #formatting line labels
     geom_text(
-    data = init23 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    data = init23 |> filter(x == max(x)) |> mutate(label = stringr::str_to_title(trait)),
     aes(label = label, alpha = opacity), 
     hjust = 0, 
     nudge_x = 0.1,
@@ -2049,7 +2061,7 @@ This includes code for a scatterplot of height, width, perimeter, surface area, 
 #are assigned 3. 
 showtext_auto()
 init <- init_rehy_df 
-init2 <- as.data.frame(init) %>% 
+init2 <- as.data.frame(init) |> 
   mutate(trait = as.factor(trait))
 
 init2 <- init[init$trait != "thallus dry matter content"]
@@ -2077,7 +2089,7 @@ trait_palette <- c("surface area" = "#ffbf00",
 #.........................plotting.........................
 #......rehydrate trait values (x) & initial trait values (y).....
 
-plot_ir_deviants <- init2 %>% 
+plot_ir_deviants <- init2 |> 
   ggplot(aes(x, predicted, color = trait, alpha = opacity))+
   geom_line()+
   geom_abline(slope = 1, # adding a dashed grey 1:1 reference line
@@ -2098,7 +2110,7 @@ plot_ir_deviants <- init2 %>%
   theme(legend.position = "none", 
         plot.background = element_blank())+
   geom_text( #formatting model labels
-    data = init2 %>% filter(x == max(x)) %>% mutate(label = stringr::str_to_title(trait)),
+    data = init2 |> filter(x == max(x)) |> mutate(label = stringr::str_to_title(trait)),
     aes(label = label), 
     hjust = 0, 
     nudge_x = 0.1, 
