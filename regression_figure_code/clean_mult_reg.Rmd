@@ -3,7 +3,10 @@ title: "Clean Multiple Regression Code"
 author: "Hayden Vega and An Bui"
 date: "2025-05-05"
 output:
-  html_document: default
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
 description: This file contains code for Mixed effect models and corresponding visualizations for all traits and treatments of the Functional trait project. This is the most recent version as of 5/5/25
 ---
 
@@ -65,7 +68,8 @@ height_all <- read_csv(here("data", "preliminary_data", "final_height.csv")) |>
 
 width_all <- read_csv(here("data", "preliminary_data", "final_width.csv")) |> 
   separate_wider_delim(specimen_id,
-                       delim = "-",                                                                     names = c("date", "site", "individual", "specimen"),
+                       delim = "-",
+                       names = c("date", "site", "individual", "specimen"),
                        cols_remove = FALSE) |> 
   unite("individual_id", date:individual, remove = TRUE, sep = "-")
 
@@ -257,7 +261,7 @@ volume_reg_ih_nospecies <- lmer(vol_i ~ vol_h + (1 | individual_id), data = volu
 summary(volume_reg_ih_nospecies)
 ```
 
-#3. Comparing models using AIC
+# 3. Comparing models using AIC
 
 This section includes code comparing the AIC values for models with a species interaction term and without a species interaction term to answer the question: Do models with a species interaction improve the model's fit? All trait models for rehydrated and herbarium traits are tested, and the results are commented below each model. 
 
@@ -313,7 +317,7 @@ model.sel(volume_reg_ir, volume_reg_ir_nospecies)
 #with species is better
 ```
 
-##b. Comparisons for models with Herbarium traits as a predictor variable
+## b. Comparisons for models with Herbarium traits as a predictor variable
 
 ### Height
 ```{r height-herbarium-AIC}
@@ -369,7 +373,7 @@ model.sel(volume_reg_ih, volume_reg_ih_nospecies)
 
 This section includes code that calculates the marginal and conditional R squared values of the best fitting models from the section above. We calculate the R squared value using MuMIn::r.squaredGLMM(model_name) from the MuMIn package. 
 
-##a. Calculating R squared values for models with rehydrated traits as a predictor
+## a. Calculating R squared values for models with rehydrated traits as a predictor
 
 ### Height
 ```{r r^2-height}
@@ -417,7 +421,7 @@ MuMIn::r.squaredGLMM(thick_reg_ir_nospecies)
 MuMIn::r.squaredGLMM(volume_reg_ir)
 ```
 
-##b. Calculating R squared values for models with Herbarium traits as predictor variables
+## b. Calculating R squared values for models with Herbarium traits as predictor variables
 
 ### Height     
 ```{r r^2-herbarium-height}
@@ -466,7 +470,7 @@ MuMIn::r.squaredGLMM(volume_reg_ih)
 
      
 
-#5. Saving models as predictions for later plotting
+# 5. Saving models as predictions for later plotting
 
 This section includes code to save the model predictions of the best fitting models as data frames using ggpredict(). This includes predictions for all traits and both rehydrate and herbarium treatments.
 
@@ -563,7 +567,7 @@ volume_ir_predictions
 
 ```
 
-##b. Saving predictions for models with herbarium traits as predictor variables
+## b. Saving predictions for models with herbarium traits as predictor variables
  
 ### Height    
 ```{r height-herbarium_predictions}
@@ -665,7 +669,7 @@ volume_ih_predictions_species
 # 6. Visualizing Models
 This section includes code for scatterplots of model predictions using ggplot. Every model has one scatterplot with initial trait values on the Y axis and treatment (rehydrated/herbarium) trait values on the X axis. Models that incorporate a species interaction have an additional scatterplot faceted by species. 
 
-##a. Visualizing models with Rehydrated traits on the X axis
+## a. Visualizing models with Rehydrated traits on the X axis
 
 ### Height
 ```{r rehydrate_height - PLOT}
@@ -1240,7 +1244,7 @@ volume_ir_plot_species <- ggplot() +
 
 ```
 
-##b. Visualizing models with herbarium traits on the X axis
+## b. Visualizing models with herbarium traits on the X axis
 
 ### Height 
 ```{r height-herbarium - PLOT}
