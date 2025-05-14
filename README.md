@@ -32,7 +32,7 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 
 | File Name|Description| 
 |----------|-----------|
-| final_functional_trait_data  | Contains the data for all specimens, traits, and treatments of the functional trait herbarium project. This includes nine sheets; seven of which correspond to data for a specific trait, and two of which are hidden entries for thickness and drying time.| 
+| final_functional_trait_data  |Contains the data for all specimens, traits, and treatments of the functional trait herbarium project. This includes seven sheets which correspond to data for a specific trait. | 
 | final_functional_trait_data - max_height.csv    | Contains the final data for the height for all specimens and treatments.| 
 |final_functional_trait_data - max_width.csv|Contains the final data for the width for all specimens and treatments. |
 |final_functional_trait_data - perimeter.csv|Contains the final data for the perimeter of all specimens and treatments. |
