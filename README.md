@@ -92,10 +92,10 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
   - The variables column suffix_i, column suffix_h, and column suffix_r are formatted specifically for each sheet. The column suffix portion of the variable corresponds to the trait followed by it's unit of measurement (e.g. height_cm). The i,h,and r within the variables stand for initial, herbarium, and rehydrate, respectively. These denote the treatment the data belong to. 
   - The variable **species** is the species of macroalgae that each obeservation belongs to. There are eleven abbreviations for species: BF, CC, CO, CYOS, DL, DP, EGME, GR, NAND, POLA, and R. A key is below. 
 
-| Species Abbreviation|Species Name| 
-|----------|-----------|  
-|BF|*Cryptopleura ruprechtiana*|
-|CC|*Chondracanthus spp.*|
+    | Species Abbreviation|Species Name| 
+    |----------|-----------|  
+    |BF|*Cryptopleura ruprechtiana*|
+    |CC|*Chondracanthus spp.*|
 
 
 
