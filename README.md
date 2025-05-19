@@ -74,3 +74,11 @@ To determine if fresh functional traits can be accurately predicted from an herb
 - Rehydration Treatment Methods
 
 We rehydrated each subsample  to determine if functional traits of rehydrated specimens could predict the fresh functional trait values of an herbarium specimen. During rehydration, we fully submerged each subsample in filtered seawater (60 microns).Weighing each subsample every hour, we removed the subsample from the seawater once the weight did not change for three hours. Specimens were then patted dry with a cloth for subsequent trait measurement (as in Trait measurement section).
+
+3. Methods for Processing the Data
+
+- The data were recorded manually on paper and then transferred into digitized spreadsheets.
+
+4. Describe any quality-assurance procedures performed on the data
+
+- The data were double checked for correctness and missing values were noted in this (document)[https://docs.google.com/spreadsheets/d/1i3OTJ4KeNQvkKKWyZZq07TolnpbGl9uUha3ALMi2XxI/edit?usp=sharing]. Missing values occurred when specimens were too fragile to be measured. 
