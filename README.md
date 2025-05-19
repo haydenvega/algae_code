@@ -45,7 +45,7 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 
 2. Relationship between files
 
-- All the datasheets contain data for different traits. Each trait (maximum height, maximum width, surface area, perimeter, volume, and weight) is in its own sheet. The treatments included in each sheet are Initial (column suffix `_i`), Herbarium (column suffix `_h), and Rehydrated (column suffix `_r`).  
+- All the datasheets contain data for different traits. Each trait (maximum height, maximum width, surface area, perimeter, volume, and weight) is in its own sheet. The treatments included in each sheet are Initial: column suffix_i, Herbarium: column suffix_h, and Rehydrated: column suffix_r.  
 - The trait thickness varies from the above format and has one sheet per each treatment (Initial, Herbarium, and Rehydrated), for a total of three sheets.
 
 3. There are **no** other versions of these data. 
