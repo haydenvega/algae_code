@@ -81,4 +81,21 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 
 4. Describe any quality-assurance procedures performed on the data
 
-- The data were double checked for correctness and missing values were noted in this (document)[https://docs.google.com/spreadsheets/d/1i3OTJ4KeNQvkKKWyZZq07TolnpbGl9uUha3ALMi2XxI/edit?usp=sharing]. Missing values occurred when specimens were too fragile to be measured. 
+- The data were double checked for correctness and missing values were noted in this [document](https://docs.google.com/spreadsheets/d/1i3OTJ4KeNQvkKKWyZZq07TolnpbGl9uUha3ALMi2XxI/edit?usp=sharing). Missing values occurred when specimens were too fragile to be measured. 
+
+## Data Specific Information for : final_functional_trait_data - XXXX.csv
+
+1. Variables
+
+- There are a total of nine csv files. Each file contains the data for a unique functional trait and contains five variables: specimen_id, column suffix_i, column suffix_h, column_suffix r, species, and notes
+  - The variable **specimen_id** is formatted as follows: date collected-site collected-individual ID-subsample ID. For example, 062723-MOHK-018-H corresponds to a specimen collected on June 27, 2023 at the site MOHK from individual 018, sub sample H. 
+  - The variables column suffix_i, column suffix_h, and column suffix_r are formatted specifically for each sheet. The column suffix portion of the variable corresponds to the trait followed by it's unit of measurement (e.g. height_cm). The i,h,and r within the variables stand for initial, herbarium, and rehydrate, respectively. These denote the treatment the data belong to. 
+  - The variable **species** is the species of macroalgae that each obeservation belongs to. There are eleven abbreviations for species: BF, CC, CO, CYOS, DL, DP, EGME, GR, NAND, POLA, and R. A key is below. 
+
+| Species Abbreviation|Species Name| 
+|----------|-----------|  
+|BF|*Cryptopleura ruprechtiana*|
+|CC|*Chondracanthus spp.*|
+
+
+
