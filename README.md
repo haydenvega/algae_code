@@ -33,7 +33,7 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 ```plaintext
 data
 ├── final_trait_data
-│   ├── final_functional_trait_data - max_height.csv (Contains the final data for the **height** for all specimens and treatments.)
+│   ├── final_functional_trait_data - max_height.csv (Contains the final data for the height for all specimens and treatments.)
 │   ├── final_functional_trait_data - max_width.csv (Contains the final data for the width for all specimens and treatments.)
 │   ├── final_functional_trait_data - perimeter.csv (Contains the final data for the perimeter of all specimens and treatments.)
 │   ├── final_functional_trait_data - surf_area.csv (Contains the final data for the surface area of all specimens and treatments.)
