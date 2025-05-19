@@ -30,8 +30,19 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 
 1. File list
 
-<pre markdown="1"> ```plaintext C:\USERS\VEGAH\ONEDRIVE\DESKTOP\MY DEAR PRECIOUS CODE\GIT\ALGAE_CODE\ALGAE_CODE | .gitignore | .RData | .Rhistory | algae_code.Rproj | README.html | README.md | +---data | +---final_trait_data | | final_functional_trait_data - max_height.csv | | final_functional_trait_data - max_width.csv | | final_functional_trait_data - perimeter.csv | | final_functional_trait_data - surf_area.csv | | final_functional_trait_data - thickness_h (1).csv | | final_functional_trait_data - thickness_i (1).csv | | final_functional_trait_data - thickness_r (1).csv | | final_functional_trait_data - volume.csv | | final_functional_trait_data - weight.csv | | | \---preliminary_data | 2_13 code - h,w,t.csv | 2_13 code - max_height.csv | EGME Residual Calculation - max_height.csv | final_height.csv | final_perimeter.csv | final_surf.csv | final_tdmc.csv | final_thickness.csv | final_volume.csv | final_width.csv | height(1_31) - max_height.csv | height_new - Sheet1.csv | max_height - Sheet1.csv | raw | Residual_mult_species - max_height.csv | Residual_mult_species_reg - max_height.csv | surf_area - Sheet1.csv | +---figures | +---herbarium_treatment | | height_herbarium_scatterplot_slope_r.png | | perimeter_herbarium_scatterplot_r.png | | perimeter_herbarium_species_facet.png | | surface_area_herbarium_scatterplot_slope_r.png | | surface_area_herbarium_species_facet.png | | thickness_herbarium_scatterplot_slope_r.png | | thickness_herbarium_species_facet.png | | volume_herbarium_scatterplot_slope_r.png | | volume_herbarium_species_facet.png | | weight_herbarium_scatterplot_slope_r.png | | weight_herbarium_species_facet.png | | width_herbarium_scatterplot_slope_r.png | | width_herbarium_species_facet.png | | | \---rehydrate_treatment | 1_1_all_traits.png | all_traits_deviant_1_1.png | all_traits_scatterplot.png | height_rehydrated_scatterplot_slope_r.png | perimeter_rehydrated_scatterplot_slope_r.png | perimeter_rehydrate_speciesfacet_scatterplot.png | surface_area_rehydrate_scatterplot_slope_r.png | surface_area_rehydrate_speciesfacet.png | thickness_rehydrate_scatterplot_slope_r.png | volume_rehydrate_scatterplot_slope_r.png | volume_rehydrate_species_facet.png | weight_rehydrate_scatterplot_slope_r.png | weight_rehydrate_speciesfacet.png | width_rehydrate_scatterplot_slope_r.png | \---regression_figure_code | .Rhistory | clean_mult_reg.html | clean_mult_reg.Rmd | +---clean_mult_reg_files | \---figure-docx | height-herbarium - PLOT-1.png | perimeter-herbarium - PLOT-1.png | perimeter-herbarium - PLOT-2.png | rehydrate-volume - PLOT-1.png | rehydrate-volume - PLOT-2.png | rehydrate_height - PLOT-1.png | rehydrate_perimeter - PLOT-1.png | rehydrate_perimeter - PLOT-2.png | rehydrate_surf - PLOT (species)-1.png | rehydrate_surf - PLOT (species)-2.png | rehydrate_tdmc - plot - species-1.png | rehydrate_tdmc - plot - species-2.png | rehydrate_thick - PLOT-1.png | rehydrate_width - PLOT-1.png | surf-herbarium - PLOT (species)-1.png | surf-herbarium - PLOT (species)-2.png | tdmc-herbarium - plot - species-1.png | tdmc-herbarium - plot - species-2.png | thick-herbarium - PLOT-1.png | thick-herbarium - PLOT-2.png | unnamed-chunk-2-1.png | volume-herbarium - PLOT-1.png | volume-herbarium - PLOT-2.png | width-herbarium - PLOT-1.png | width-herbarium - PLOT-2.png | \---old-code figure_code.Rmd rough_mult_reg.Rmd ```
-
+```plaintext
+data
+├── final_trait_data
+│   ├── final_functional_trait_data - max_height.csv
+│   ├── final_functional_trait_data - max_width.csv
+│   ├── final_functional_trait_data - perimeter.csv
+│   ├── final_functional_trait_data - surf_area.csv
+│   ├── final_functional_trait_data - thickness_h (1).csv
+│   ├── final_functional_trait_data - thickness_i (1).csv
+│   ├── final_functional_trait_data - thickness_r (1).csv
+│   ├── final_functional_trait_data - volume.csv
+│   └── final_functional_trait_data - weight.csv
+```
 2. Relationship between files
 
 - All the datasheets contain data for different traits. Each trait (maximum height, maximum width, surface area, perimeter, volume, and weight) is in its own sheet. The treatments included in each sheet are Initial: column suffix_i, Herbarium: column suffix_h, and Rehydrated: column suffix_r.  
