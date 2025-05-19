@@ -31,17 +31,30 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 1. File list
 
 ```plaintext
-data
-├── final_trait_data
-│   ├── final_functional_trait_data - max_height.csv (Contains the final data for the height for all specimens and treatments.)
-│   ├── final_functional_trait_data - max_width.csv (Contains the final data for the width for all specimens and treatments.)
-│   ├── final_functional_trait_data - perimeter.csv (Contains the final data for the perimeter of all specimens and treatments.)
-│   ├── final_functional_trait_data - surf_area.csv (Contains the final data for the surface area of all specimens and treatments.)
-│   ├── final_functional_trait_data - thickness_h.csv (Contains the final data for the herbarium thickness of all specimens.)
-│   ├── final_functional_trait_data - thickness_i.csv (Contains the final data for the initial thickness of all specimens.)
-│   ├── final_functional_trait_data - thickness_r.csv (Contains the final data for the rehydrated thickness of all specimens.)
-│   ├── final_functional_trait_data - volume.csv (Contains the final data for the volume of all specimens and treatments.)
-│   └── final_functional_trait_data - weight.csv (Contains the final data for the weight of all specimens and treatments.)
+.
+├── README.html
+├── README.md
+├── algae_code.Rproj
+├── data
+│   ├── final_trait_data
+│   │   ├── final_functional_trait_data - max_height.csv    # final height data
+│   │   ├── final_functional_trait_data - max_width.csv     # final width data
+│   │   ├── final_functional_trait_data - perimeter.csv     # final perimeter data
+│   │   ├── final_functional_trait_data - surf_area.csv
+│   │   ├── final_functional_trait_data - thickness_h.csv
+│   │   ├── final_functional_trait_data - thickness_i.csv
+│   │   ├── final_functional_trait_data - thickness_r.csv
+│   │   ├── final_functional_trait_data - volume.csv
+│   │   └── final_functional_trait_data - weight.csv
+│   └── preliminary_data
+├── figures
+│   ├── herbarium_treatment
+│   └── rehydrate_treatment
+└── regression_figure_code
+    ├── clean_mult_reg.Rmd
+    ├── clean_mult_reg.html
+    ├── clean_mult_reg_files
+    └── old-codes
 ```
 2. Relationship between files
 
