@@ -65,26 +65,26 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 
 ## Methodological Information
 
-1. Study goals
+### 1. Study goals
 
   Our goal was to investigate how herbarium and rehydration treatments affected seven common trait values (maximum height, maximum width, surface area, perimeter, volume, thickness, and weight) in eleven species of macroalgae (Egregia menziesii, Chondracanthus spp., Desmarestia ligulata, Dictyota spp., Gelidium robustum, Stephanocystis osmundacea, Rhodymenia spp., Coralina chilensis, Nienburgia andersoniana, Cryptopleura ruprechtiana, and Polyneura latissima).
 
-2. Description of Methods
+### 2. Description of Methods
 
-- Species Selection and Study Site
+#### Species Selection and Study Site
 
 From 06/27/23 to 08/07/23, we collected macroalgal individuals on SCUBA from Santa Barbara Coastal Long Term Ecological Research (SBC LTER) sites Mohawk (MOHK, Long: -119.72957, Lat: 34.3940708), Bullito (BULL, Long: -120.33349, Lat: 34.45850533), Carpinteria (CARP, Long: -119.5416933 Lat: 34.3916319), and Naples (NAPL, Long:-119.95154, Lat: 34.4221216). We collected samples from eleven species: Egregia menziesii, Chondracanthus spp., Desmarestia ligulata, Dictyota spp., Gelidium robustum, Stephanocystis osmundacea, Rhodymenia spp., Coralina chilensis, Nienburgia andersoniana, Cryptopleura ruprechtiana, and Polyneura latissima, which are common species in kelp forests and well-represented in herbarium collections. For species with complex structures, we collected three blades or branches for trait measurements, one from the bottom, middle, and top of the individual. We chose to measure traits on subsamples because many herbarium specimens preserve subsamples instead of the whole individual.
 
-- Trait measurement
+#### Trait measurement
 
 To investigate how a specimen’s functional traits change throughout the herbarium and rehydration process, we measured traits on each subsample  a total of three times: once when the specimen was freshly collected (Initial treatment), once after the specimen was pressed (Herbarium treatment), and once after the specimen was rehydrated (Rehydrated treatment). We measured maximum height, maximum width, thickness, weight, volume, surface area, and perimeter from each thallus, following standard trait protocols from Pérez-Harguindeguy et al. 2013. 
 To collect maximum height, we measured the subsample  from the base to the tip. We measured maximum width by measuring the widest point of the subsample. We measured thickness using a digital caliper in ten haphazardly locations on the thallus, avoiding  the midrib, holdfast, or stipe if present. Next, we weighed each subsample to obtain initial weight. We then scanned each subsample using a flatbed scanner  and used a visual processing software (ImageJ) to measure perimeter and surface area. Lastly, we placed each subsample  into a graduated cylinder filled with DI water to measure volume via water displacement.
 	
-- Herbarium Treatment Methods
+#### Herbarium Treatment Methods
  
 To determine if fresh functional traits can be accurately predicted from an herbarium specimen, we preserved our specimens following standard herbarium trait protocols found in Smith 1971. We pressed each subsample in a cardboard press on a half sheet of acid-free archival herbarium paper. We compressed the cardboard press with weights as the algae were drying. We changed blotting paper and weighed each subsample  daily. We ended the pressing process once the weight of the subsample  did not change for three days. Once dry, the subsamples  were removed from the press for trait analysis. 
 
-- Rehydration Treatment Methods
+#### Rehydration Treatment Methods
 
 We rehydrated each subsample  to determine if functional traits of rehydrated specimens could predict the fresh functional trait values of an herbarium specimen. During rehydration, we fully submerged each subsample in filtered seawater (60 microns).Weighing each subsample every hour, we removed the subsample from the seawater once the weight did not change for three hours. Specimens were then patted dry with a cloth for subsequent trait measurement (as in Trait measurement section).
 
