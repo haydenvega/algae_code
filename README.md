@@ -96,6 +96,13 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
     |----------|-----------|  
     |BF|*Cryptopleura ruprechtiana*|
     |CC|*Chondracanthus spp.*|
-
-
-
+    |CO|*Corallina chilensis*|
+    |CYOS|*Stephanocystis osmundacea*|
+    |DL|*Desmarestia ligulata*|
+    |DP|*Dictyota spp.*|
+    |EGME|*Egregia menziesii*|
+    |GR|*Gelidium robustum*|
+    |NAND|*Nienburgia andersoniana*|
+    |POLA|*Polyneura latissima*|
+    |R|*Rhodymenia spp.*|
+    
