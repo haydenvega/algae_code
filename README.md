@@ -5,11 +5,29 @@ This repository contains data and preliminary analysis for the Macroalgal functi
   - [General Information](https://github.com/haydenvega/algae_code?tab=readme-ov-file#general-information)
     - [1. Authors]()
     - [2. Dates of data collection]()
-    - [Location of data collection]()
-    - [Funding Sources]()
+    - [3. Location of data collection]()
+    - [4. Funding Sources]()
   - [Sharing/Access Information]()
-    - [Licenses/restrictions placed on the data]()
-    - [Links to publications that cite or use the data]()
+    - [1. Licenses/restrictions placed on the data]()
+    - [2. Links to publications that cite or use the data]()
+    - [3. Links/relationships to ancillary datasets]()
+    - [4. Data Derivation]()
+    - [5. Recommended citation for this dataset]()
+  - [Data and File Overview]()
+    - [1. File list]()
+    - [2. Relationship between files]()
+    - [3. Data Versions]()
+  - [Methodological Information]()
+    - [1. Study Goals]()
+    - [2. Description of Methods]()
+    - [3. Methods for Processing the Data]()
+    - [4. Descrption of quality assurance]()
+  - [Data Specific Information for: final_functional_trait_data - XXX.csv]()
+    - [1. Variables]()
+    - [2. Rows]()
+    - [3. Variable List]()
+    - [4. Missing Data]()
+  - [Citations]()
 ## General Information
 
 ### 1. Authors: 
@@ -42,7 +60,7 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 
 - N/A
 
-### 4. Links/relationships to ancillary data sets
+### 4. Links/relationships to ancillary datasets
 
 - N/A
 
@@ -117,11 +135,11 @@ To determine if fresh functional traits can be accurately predicted from an herb
 
 We rehydrated each subsample  to determine if functional traits of rehydrated specimens could predict the fresh functional trait values of an herbarium specimen. During rehydration, we fully submerged each subsample in filtered seawater (60 microns).Weighing each subsample every hour, we removed the subsample from the seawater once the weight did not change for three hours. Specimens were then patted dry with a cloth for subsequent trait measurement (as in Trait measurement section).
 
-3. Methods for Processing the Data
+### 3. Methods for Processing the Data
 
 - The data were recorded manually on paper and then transferred into digitized spreadsheets.
 
-4. Describe any quality-assurance procedures performed on the data
+### 4. Describe any quality-assurance procedures performed on the data
 
 - The data were double checked for correctness and missing values were noted in this [document](https://docs.google.com/spreadsheets/d/1i3OTJ4KeNQvkKKWyZZq07TolnpbGl9uUha3ALMi2XxI/edit?usp=sharing). Missing values occurred when specimens were too fragile to be measured. 
 
@@ -185,3 +203,8 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 - Missing observations are reported as “NA”
 - Here is a link to a sheet containing a description of all missing observations. 
 - Missing observations occurred when the specimen was too fragile to handle. 
+
+## Citations
+
+Pérez-Harguindeguy, N., S. Díaz, E. Garnier, S. Lavorel, H. Poorter, P. Jaureguiberry, M. S. Bret-Harte, W. K. Cornwell, J. M. Craine, D. E. Gurvich, C. Urcelay, E. J. Veneklaas, P. B. Reich, L. Poorter, I. J. Wright, P. Ray, L. Enrico, J. G. Pausas, A. C. de Vos, N. Buchmann, G. Funes, F. Quétier, J. G. Hodgson, K. Thompson, H. D. Morgan, H. ter Steege, L. Sack, B. Blonder, P. Poschlod, M. V. Vaieretti, G. Conti, A. C. Staver, S. Aquino, and J. H. C. Cornelissen. 2013. New handbook for standardised measurement of plant functional traits worldwide. Australian Journal of Botany 61:167.
+Smith, C. E. 1971. Preparing herbarium specimens of vascular plants. Agricultural Research Service, U.S. Dept. of Agriculture; [for sale by the Supt. of Docs., U.S. Govt. Print. Off., [Washington].
