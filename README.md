@@ -206,5 +206,6 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 
 ## Citations
 
-Pérez-Harguindeguy, N., S. Díaz, E. Garnier, S. Lavorel, H. Poorter, P. Jaureguiberry, M. S. Bret-Harte, W. K. Cornwell, J. M. Craine, D. E. Gurvich, C. Urcelay, E. J. Veneklaas, P. B. Reich, L. Poorter, I. J. Wright, P. Ray, L. Enrico, J. G. Pausas, A. C. de Vos, N. Buchmann, G. Funes, F. Quétier, J. G. Hodgson, K. Thompson, H. D. Morgan, H. ter Steege, L. Sack, B. Blonder, P. Poschlod, M. V. Vaieretti, G. Conti, A. C. Staver, S. Aquino, and J. H. C. Cornelissen. 2013. New handbook for standardised measurement of plant functional traits worldwide. Australian Journal of Botany 61:167.
-Smith, C. E. 1971. Preparing herbarium specimens of vascular plants. Agricultural Research Service, U.S. Dept. of Agriculture; [for sale by the Supt. of Docs., U.S. Govt. Print. Off., [Washington].
+  Pérez-Harguindeguy, N., S. Díaz, E. Garnier, S. Lavorel, H. Poorter, P. Jaureguiberry, M. S. Bret-Harte, W. K. Cornwell, J. M. Craine, D. E. Gurvich, C. Urcelay, E. J. Veneklaas, P. B. Reich, L. Poorter, I. J. Wright, P. Ray, L. Enrico, J. G. Pausas, A. C. de Vos, N. Buchmann, G. Funes, F. Quétier, J. G. Hodgson, K. Thompson, H. D. Morgan, H. ter Steege, L. Sack, B. Blonder, P. Poschlod, M. V. Vaieretti, G. Conti, A. C. Staver, S. Aquino, and J. H. C. Cornelissen. 2013. New handbook for standardised measurement of plant functional traits worldwide. Australian Journal of Botany 61:167.
+  
+  Smith, C. E. 1971. Preparing herbarium specimens of vascular plants. Agricultural Research Service, U.S. Dept. of Agriculture; [for sale by the Supt. of Docs., U.S. Govt. Print. Off., [Washington].
