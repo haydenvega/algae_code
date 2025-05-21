@@ -124,32 +124,32 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 
 ### 3. Variable List
 
-    |Variable|Description| 
-    |----------|-----------|  
-    |specimen_id|A unique ID for each specimen. Specimen Ids are formatted as MM DD YY-site-individual-subsample.|
-    |species|Species of an individual. Entries are species abbreviations.|
-    |notes|Notes about specimens and how they were collected.|
-    |height_cm_i|Initial height of each individual in cm.|
-    |height_cm_h|Herbarium height of each individual in cm.|
-    |height_cm_r|Rehydrated height of each individual in cm.|
-    |width_cm_i|Initial width of each individual in cm.|
-    |width_cm_r|Rehydrated width of each individual in cm|
-    |width_cm_h|Herbarium width of each individual in cm.|
-    |thick_cm_i|Initial average thickness of each individual in cm|
-    |thick_cm_h|Herbarium average thickness of each individual in cm.|
-    |thick_cm_r|Rehydrated average thickness of each individual in cm.|
-    |surf_cm_h|Herbarium surface area of each specimen in cm2.|
-    |surf_cm_r|Rehydrated surface area of each specimen in cm2.|
-    |surf_cm_i|Initial surface area of each individual in cm2.|
-    |per_cm_r|Rehydrated perimeter of each specimen in cm.|
-    |per_cm_h|Herbarium perimeter of each specimen in cm.|
-    |per_cm_i|Initial perimeter of each specimen in cm.|
-    |vol_ml_h|Herbarium volume of each specimen in mL.|
-    |vol_ml_i|Initial volume of each specimen in mL.|
-    |vol_ml_r|Rehydrated volume of each specimen in mL.|
-    |weight_g_h|Herbarium weight of each specimen in g.|
-    |weight_g_i|Initial weight of each specimen in g.|
-    |weight_g_r|Rehydrated weight of each specimen in g.|
+|Variable|Description| 
+|----------|-----------|  
+|specimen_id|A unique ID for each specimen. Specimen Ids are formatted as MM DD YY-site-individual-subsample.|
+|species|Species of an individual. Entries are species abbreviations.|
+|notes|Notes about specimens and how they were collected.|
+|height_cm_i|Initial height of each individual in cm.|
+|height_cm_h|Herbarium height of each individual in cm.|
+|height_cm_r|Rehydrated height of each individual in cm.|
+|width_cm_i|Initial width of each individual in cm.|
+|width_cm_r|Rehydrated width of each individual in cm|
+|width_cm_h|Herbarium width of each individual in cm.|
+|thick_cm_i|Initial average thickness of each individual in cm|
+|thick_cm_h|Herbarium average thickness of each individual in cm.|
+|thick_cm_r|Rehydrated average thickness of each individual in cm.|
+|surf_cm_h|Herbarium surface area of each specimen in cm2.|
+|surf_cm_r|Rehydrated surface area of each specimen in cm2.|
+|surf_cm_i|Initial surface area of each individual in cm2.|
+|per_cm_r|Rehydrated perimeter of each specimen in cm.|
+|per_cm_h|Herbarium perimeter of each specimen in cm.|
+|per_cm_i|Initial perimeter of each specimen in cm.|
+|vol_ml_h|Herbarium volume of each specimen in mL.|
+|vol_ml_i|Initial volume of each specimen in mL.|
+|vol_ml_r|Rehydrated volume of each specimen in mL.|
+|weight_g_h|Herbarium weight of each specimen in g.|
+|weight_g_i|Initial weight of each specimen in g.|
+|weight_g_r|Rehydrated weight of each specimen in g.|
 
 ### 4. Missing Data
 
