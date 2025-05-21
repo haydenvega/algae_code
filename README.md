@@ -40,12 +40,12 @@ This repository contains data and preliminary analysis for the Macroalgal functi
 │   │   ├── final_functional_trait_data - max_height.csv    # final height data
 │   │   ├── final_functional_trait_data - max_width.csv     # final width data
 │   │   ├── final_functional_trait_data - perimeter.csv     # final perimeter data
-│   │   ├── final_functional_trait_data - surf_area.csv
-│   │   ├── final_functional_trait_data - thickness_h.csv
-│   │   ├── final_functional_trait_data - thickness_i.csv
-│   │   ├── final_functional_trait_data - thickness_r.csv
-│   │   ├── final_functional_trait_data - volume.csv
-│   │   └── final_functional_trait_data - weight.csv
+│   │   ├── final_functional_trait_data - surf_area.csv     # final surface area data
+│   │   ├── final_functional_trait_data - thickness_h.csv   # final thickness data for the herbarium treatment
+│   │   ├── final_functional_trait_data - thickness_i.csv   # final thickness data for initial values
+│   │   ├── final_functional_trait_data - thickness_r.csv   # final thickness data for the rehydrated treatment
+│   │   ├── final_functional_trait_data - volume.csv        # final volume data 
+│   │   └── final_functional_trait_data - weight.csv        # final weight data
 │   └── preliminary_data
 ├── figures
 │   ├── herbarium_treatment
@@ -98,7 +98,7 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 
 ## Data Specific Information for : final_functional_trait_data - XXXX.csv
 
-1. Variables
+### 1. Variables
 
 - There are a total of nine csv files. Each file contains the data for a unique functional trait and contains five variables: specimen_id, column suffix_i, column suffix_h, column_suffix r, species, and notes
   - The variable **specimen_id** is formatted as follows: date collected-site collected-individual ID-subsample ID. For example, 062723-MOHK-018-H corresponds to a specimen collected on June 27, 2023 at the site MOHK from individual 018, sub sample H. 
@@ -119,3 +119,40 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
     |POLA|*Polyneura latissima*|
     |R|*Rhodymenia spp.*|
     
+### 2. Rows
+  - Each row contains the data for a unique individual. There are 175 individuals included in each sheet. 
+
+### 3. Variable List
+
+ | Variable|Description| 
+    |----------|-----------|  
+    |specimen_id|A unique ID for each specimen. Specimen Ids are formatted as MM DD YY-site-individual-subsample.|
+    |species|Species of an individual. Entries are species abbreviations.|
+    |notes|Notes about specimens and how they were collected.|
+    |height_cm_i|Initial height of each individual in cm.|
+    |height_cm_h|Herbarium height of each individual in cm.|
+    |height_cm_r|Rehydrated height of each individual in cm.|
+    |width_cm_i|Initial width of each individual in cm.|
+    |width_cm_r|Rehydrated width of each individual in cm|
+    |width_cm_h|Herbarium width of each individual in cm.|
+    |thick_cm_i|Initial average thickness of each individual in cm|
+    |thick_cm_h|Herbarium average thickness of each individual in cm.|
+    |thick_cm_r|Rehydrated average thickness of each individual in cm.|
+    |surf_cm_h|Herbarium surface area of each specimen in cm2.|
+    |surf_cm_r|Rehydrated surface area of each specimen in cm2.|
+    |surf_cm_i|Initial surface area of each individual in cm2.|
+    |per_cm_r|Rehydrated perimeter of each specimen in cm.|
+    |per_cm_h|Herbarium perimeter of each specimen in cm.|
+    |per_cm_i|Initial perimeter of each specimen in cm.|
+    |vol_ml_h|Herbarium volume of each specimen in mL.|
+    |vol_ml_i|Initial volume of each specimen in mL.|
+    |vol_ml_r|Rehydrated volume of each specimen in mL.|
+    |weight_g_h|Herbarium weight of each specimen in g.|
+    |weight_g_i|Initial weight of each specimen in g.|
+    |weight_g_r|Rehydrated weight of each specimen in g.|
+
+### 4. Missing Data
+
+- Missing observations are reported as “NA”
+- Here is a link to a sheet containing a description of all missing observations. 
+- Missing observations occurred when the specimen was too fragile to handle. 
