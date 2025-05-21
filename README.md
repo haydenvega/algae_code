@@ -124,7 +124,7 @@ We rehydrated each subsample  to determine if functional traits of rehydrated sp
 
 ### 3. Variable List
 
- | Variable|Description| 
+    |Variable|Description| 
     |----------|-----------|  
     |specimen_id|A unique ID for each specimen. Specimen Ids are formatted as MM DD YY-site-individual-subsample.|
     |species|Species of an individual. Entries are species abbreviations.|
