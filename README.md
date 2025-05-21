@@ -2,8 +2,14 @@
 This repository contains data and preliminary analysis for the Macroalgal functional trait project.
 # Table of Contents
 
-  [General Information]()
-    
+  [General Information](https://github.com/haydenvega/algae_code?tab=readme-ov-file#general-information)
+    - [1. Authors]()
+    - [2. Dates of data collection]()
+    - [Location of data collection]()
+    - [Funding Sources]()
+  [Sharing/Access Information]()
+    - [Licenses/restrictions placed on the data]()
+    - [Links to publications that cite or use the data]()
 ## General Information
 
 ### 1. Authors: 
